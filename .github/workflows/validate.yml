@@ -6,7 +6,8 @@ on:
       - 'skill-creator/**'
   push:
     branches:
-      - main
+      - master
+      - main  # Support both branch names
       - 'claude/**'
     paths:
       - 'skill-creator/**'

@@ -1,9 +1,10 @@
-name: Auto Release on Main
+name: Auto Release on Master
 
 on:
   push:
     branches:
-      - main
+      - master
+      - main  # Support both branch names
     paths:
       - 'skill-creator/**'
 
