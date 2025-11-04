@@ -1,20 +1,25 @@
 ---
-name: Your Advanced Skill Name
-description: Brief description of what this Skill does and when Claude should use it
+name: your-advanced-skill-name
+description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates statistical reports with visualizations. Use when analyzing data, creating reports, working with spreadsheets, or when user mentions CSV, data analysis, statistics, or reports."
 version: 1.0.0
 dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
 ---
 
+# IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
+# IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
+# IMPORTANT: Skill.md body should stay under 500 lines - move details to REFERENCE.md
+
 # Your Advanced Skill Name
 
 ## Overview
-Detailed explanation of what this Skill does, its purpose, and the problems it solves.
+Explain what this Skill does and problems it solves. Be concise—assume Claude is intelligent. Only include information Claude doesn't already have.
 
 ## When to Use This Skill
-- Scenario 1: When the user needs [specific complex task]
-- Scenario 2: When processing [specific data types]
-- Scenario 3: When integrating with [specific systems]
-- Scenario 4: When asked to [specific action]
+Be specific about triggers and contexts:
+- When user mentions [specific keywords or phrases]
+- When processing [specific data types or file formats]
+- When integrating with [specific systems or APIs]
+- When asked to [specific action or workflow]
 
 ## Prerequisites
 List any setup requirements:
@@ -24,6 +29,15 @@ List any setup requirements:
 - Environmental setup
 
 ## Instructions
+
+**For complex workflows, provide a checklist:**
+```
+Workflow Progress:
+- [ ] Phase 1: Preparation
+- [ ] Phase 2: Processing
+- [ ] Phase 3: Output
+- [ ] Phase 4: Validation
+```
 
 ### Phase 1: Preparation
 1. Validate inputs meet required format
@@ -40,27 +54,48 @@ List any setup requirements:
 2. Provide summary of actions taken
 3. Suggest next steps if applicable
 
+### Phase 4: Validation (Feedback Loop)
+1. Run validation script: `python scripts/validate.py output.json`
+2. If validation fails:
+   - Review error messages
+   - Fix issues
+   - Run validation again
+3. Only proceed when validation passes
+
 ## Scripts
 
-### script_name.py
-Located in `scripts/script_name.py`, this script:
-- Purpose: What it does
-- Inputs: What it expects
-- Outputs: What it produces
-- Usage: `python scripts/script_name.py --input data.csv --output results.json`
+Scripts should solve problems, not punt to Claude. Include explicit error handling and avoid "voodoo constants."
 
-Example:
-```python
-# See scripts/script_name.py for full implementation
-# Usage: python scripts/script_name.py --arg1 value1 --arg2 value2
+### process_data.py
+**Execute this script** to process data files:
+```bash
+python scripts/process_data.py --input data.csv --output results.json
 ```
 
-### another_script.js
-Located in `scripts/another_script.js`, this script:
-- Purpose: What it does
-- Inputs: What it expects
-- Outputs: What it produces
-- Usage: `node scripts/another_script.js input.json`
+- **Purpose**: What it does
+- **Inputs**: What it expects
+- **Outputs**: What it produces
+- **Error handling**: How it handles failures
+
+### validate.py
+**Execute this script** to validate outputs:
+```bash
+python scripts/validate.py results.json
+```
+
+Returns "OK" or lists specific validation errors.
+
+### analyze_format.js
+**Execute this script** for format analysis:
+```bash
+node scripts/analyze_format.js input.json
+```
+
+- **Purpose**: What it does
+- **Inputs**: What it expects
+- **Outputs**: What it produces
+
+**Note**: Always use forward slashes in paths, never backslashes.
 
 ## Resources
 
@@ -154,14 +189,45 @@ Edge case scenario
 **Solution:** How to fix it
 
 ## Security Considerations
-- Never hardcode sensitive data
-- Use MCP connections for external services
-- Validate all user inputs
-- Sanitize outputs
+- ⚠️ **Never hardcode sensitive data** (API keys, passwords, tokens)
+- Use MCP connections for external services (format: `ServerName:tool_name`)
+- Validate all user inputs in scripts
+- Sanitize outputs before displaying
 - Follow principle of least privilege
+- Document security requirements clearly
+
+## Best Practices Checklist
+
+Before publishing this Skill:
+
+### Core Quality
+- [ ] Name uses lowercase-with-hyphens (max 64 chars)
+- [ ] Description includes what it does AND when to use it (max 1024 chars)
+- [ ] Description written in third person
+- [ ] Skill.md body under 500 lines
+- [ ] Detailed content moved to REFERENCE.md
+- [ ] Examples are concrete, not abstract
+- [ ] Consistent terminology throughout
+- [ ] File references are one level deep
+- [ ] No Windows-style paths (use forward slashes)
+- [ ] No time-sensitive information
+
+### Code and Scripts
+- [ ] Scripts solve problems rather than punt to Claude
+- [ ] Error handling is explicit and helpful
+- [ ] No "voodoo constants" (all values justified with comments)
+- [ ] Required packages listed in dependencies
+- [ ] Scripts have clear documentation
+- [ ] Feedback loops for validation
+
+### Testing
+- [ ] Created at least three evaluations
+- [ ] Tested with Haiku, Sonnet, and Opus
+- [ ] Tested with real usage scenarios
+- [ ] Description accurately triggers Skill
 
 ## Version History
 - **1.0.0**: Initial release with [features]
 
 ## Notes
-Additional context, tips, or advanced usage patterns.
+Additional context. Keep concise—only what Claude doesn't already know. For detailed technical specifications, create REFERENCE.md.

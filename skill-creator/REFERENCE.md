@@ -583,6 +583,292 @@ def safe_file_read(filepath):
 - Use efficient libraries (pandas, numpy)
 - Add progress indicators for long operations
 
+## Evaluation and Iteration
+
+### Build Evaluations First
+Create evaluations BEFORE writing extensive documentation to ensure your Skill solves real problems.
+
+**Evaluation-driven development:**
+1. **Identify gaps**: Run Claude on tasks without the Skill, document failures
+2. **Create evaluations**: Build 3+ scenarios testing these gaps
+3. **Establish baseline**: Measure Claude's performance without the Skill
+4. **Write minimal instructions**: Create just enough to pass evaluations
+5. **Iterate**: Execute evaluations, compare, refine
+
+**Evaluation structure example:**
+```json
+{
+  "skills": ["pdf-processing"],
+  "query": "Extract all text from this PDF and save to output.txt",
+  "files": ["test-files/document.pdf"],
+  "expected_behavior": [
+    "Successfully reads the PDF using appropriate tool",
+    "Extracts text from all pages without missing content",
+    "Saves to output.txt in readable format"
+  ]
+}
+```
+
+### Develop Skills Iteratively with Claude
+Use one Claude instance ("Claude A") to create Skills, another ("Claude B") to test them.
+
+**Creating a new Skill:**
+1. **Complete task without Skill**: Work through problem with Claude A using normal prompting
+2. **Identify reusable pattern**: Notice what context you repeatedly provide
+3. **Ask Claude A to create Skill**: "Create a Skill that captures this pattern"
+4. **Review for conciseness**: Remove unnecessary explanations
+5. **Improve architecture**: Ask Claude A to organize content effectively
+6. **Test on similar tasks**: Use Skill with Claude B on related use cases
+7. **Iterate based on observation**: Return to Claude A with specifics about Claude B's behavior
+
+**Iterating on existing Skills:**
+1. **Use Skill in real workflows**: Give Claude B actual tasks
+2. **Observe behavior**: Note where it struggles or succeeds
+3. **Return to Claude A**: Share current Skill and describe observations
+4. **Review suggestions**: Claude A suggests improvements
+5. **Apply and test**: Update Skill, test with Claude B again
+6. **Repeat based on usage**: Continue observe-refine-test cycle
+
+**Why this works**: Claude A understands agent needs, you provide domain expertise, Claude B reveals gaps through real usage.
+
+### Observe How Claude Navigates Skills
+Pay attention to how Claude uses Skills in practice:
+- **Unexpected exploration paths**: Structure might not be intuitive
+- **Missed connections**: Links need to be more explicit
+- **Overreliance on sections**: Content might belong in main Skill.md
+- **Ignored content**: File might be unnecessary or poorly signaled
+
+The `name` and `description` in metadata are critical—Claude uses these to decide whether to trigger the Skill.
+
+## Content Guidelines
+
+### Avoid Time-Sensitive Information
+Don't include information that will become outdated:
+
+**Bad (time-sensitive):**
+```markdown
+If you're doing this before August 2025, use the old API.
+```
+
+**Good (use "old patterns" section):**
+```markdown
+## Current method
+Use the v2 API endpoint: `api.example.com/v2/messages`
+
+## Old patterns
+<details>
+<summary>Legacy v1 API (deprecated 2025-08)</summary>
+The v1 API used: `api.example.com/v1/messages`
+This endpoint is no longer supported.
+</details>
+```
+
+### Use Consistent Terminology
+Choose one term and use it throughout:
+
+**Good - Consistent:**
+- Always "API endpoint"
+- Always "field"
+- Always "extract"
+
+**Bad - Inconsistent:**
+- Mix "API endpoint", "URL", "API route", "path"
+- Mix "field", "box", "element", "control"
+
+### Structure Longer Reference Files
+For files longer than 100 lines, include table of contents at the top:
+
+```markdown
+# API Reference
+
+## Contents
+- Authentication and setup
+- Core methods (create, read, update, delete)
+- Advanced features (batch operations, webhooks)
+- Error handling patterns
+- Code examples
+
+## Authentication and setup
+...
+```
+
+## Advanced: Skills with Executable Code
+
+### Solve, Don't Punt
+When writing scripts, handle error conditions rather than punting to Claude.
+
+**Good (handles errors):**
+```python
+def process_file(path):
+    """Process a file, creating if it doesn't exist."""
+    try:
+        with open(path) as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"File {path} not found, creating default")
+        with open(path, 'w') as f:
+            f.write('')
+        return ''
+    except PermissionError:
+        print(f"Cannot access {path}, using default")
+        return ''
+```
+
+**Bad (punts to Claude):**
+```python
+def process_file(path):
+    # Just fail and let Claude figure it out
+    return open(path).read()
+```
+
+Document configuration parameters (avoid "voodoo constants"):
+
+**Good:**
+```python
+# HTTP requests typically complete within 30 seconds
+# Longer timeout accounts for slow connections
+REQUEST_TIMEOUT = 30
+
+# Three retries balances reliability vs speed
+# Most intermittent failures resolve by second retry
+MAX_RETRIES = 3
+```
+
+**Bad:**
+```python
+TIMEOUT = 47  # Why 47?
+RETRIES = 5   # Why 5?
+```
+
+### Provide Utility Scripts
+Pre-made scripts offer advantages over generated code:
+- More reliable
+- Save tokens (no code in context)
+- Save time (no generation)
+- Ensure consistency
+
+Make clear whether Claude should:
+- **Execute script** (most common): "Run analyze_form.py to extract fields"
+- **Read as reference** (for complex logic): "See analyze_form.py for the algorithm"
+
+### Use Visual Analysis
+When inputs can be rendered as images, have Claude analyze them:
+
+```markdown
+## Form layout analysis
+1. Convert PDF to images: `python scripts/pdf_to_images.py form.pdf`
+2. Analyze each page image to identify form fields
+3. Claude can see field locations and types visually
+```
+
+### Create Verifiable Intermediate Outputs
+For complex, open-ended tasks, use "plan-validate-execute" pattern:
+
+**Example: Updating 50 form fields**
+Without validation, Claude might reference non-existent fields or miss required fields.
+
+**Solution: Add intermediate validation**
+1. Analyze form
+2. Create plan file (changes.json)
+3. Validate plan with script
+4. Execute changes
+5. Verify output
+
+**Why this works:**
+- Catches errors early
+- Machine-verifiable
+- Reversible planning
+- Clear debugging
+
+Make validation scripts verbose with specific error messages.
+
+### Package Dependencies
+List required packages in Skill.md. Skills run in code execution environment:
+- **claude.ai**: Can install from npm and PyPI, pull from GitHub
+- **Anthropic API**: No network access, no runtime installation
+
+### MCP Tool References
+Always use fully qualified tool names to avoid "tool not found" errors.
+
+**Format:** `ServerName:tool_name`
+
+**Example:**
+```markdown
+Use the BigQuery:bigquery_schema tool to retrieve table schemas.
+Use the GitHub:create_issue tool to create issues.
+```
+
+Without the server prefix, Claude may fail to locate the tool.
+
+### Avoid Assuming Tools Are Installed
+Don't assume packages are available:
+
+**Bad:**
+```markdown
+"Use the pdf library to process the file."
+```
+
+**Good:**
+```markdown
+"Install required package: `pip install pypdf`
+
+Then use it:
+```python
+from pypdf import PdfReader
+reader = PdfReader("file.pdf")
+```
+```
+
+### Runtime Environment
+Skills run in code execution environment with filesystem access, bash commands, and code execution.
+
+**How this affects authoring:**
+- **Metadata pre-loaded**: name and description loaded at startup into system prompt
+- **Files read on-demand**: Claude uses bash/Read tools to access Skill.md and other files when needed
+- **Scripts executed efficiently**: Scripts can run via bash without loading full contents into context
+- **No context penalty for large files**: Reference files don't consume tokens until read
+- **File paths matter**: Claude navigates like a filesystem—use forward slashes
+- **Name files descriptively**: Use `form_validation_rules.md`, not `doc2.md`
+- **Organize for discovery**: Structure by domain/feature (good: `reference/finance.md`, bad: `docs/file1.md`)
+
+## Checklist for Effective Skills
+
+Before sharing a Skill, verify:
+
+### Core Quality
+- [ ] Description is specific and includes key terms
+- [ ] Description includes both what Skill does and when to use it
+- [ ] Name uses lowercase-with-hyphens format
+- [ ] Name is ≤ 64 characters
+- [ ] Description is ≤ 1024 characters
+- [ ] Skill.md body is under 500 lines
+- [ ] Additional details are in separate files (if needed)
+- [ ] No time-sensitive information (or in "old patterns" section)
+- [ ] Consistent terminology throughout
+- [ ] Examples are concrete, not abstract
+- [ ] File references are one level deep
+- [ ] Progressive disclosure used appropriately
+- [ ] Workflows have clear steps
+
+### Code and Scripts
+- [ ] Scripts solve problems rather than punt to Claude
+- [ ] Error handling is explicit and helpful
+- [ ] No "voodoo constants" (all values justified)
+- [ ] Required packages listed and verified as available
+- [ ] Scripts have clear documentation
+- [ ] No Windows-style paths (all forward slashes)
+- [ ] Validation/verification steps for critical operations
+- [ ] Feedback loops included for quality-critical tasks
+
+### Testing
+- [ ] At least three evaluations created
+- [ ] Tested with Haiku, Sonnet, and Opus
+- [ ] Tested with real usage scenarios
+- [ ] Team feedback incorporated (if applicable)
+- [ ] Description accurately triggers Skill
+- [ ] Claude loads Skill when expected
+- [ ] Skill produces correct results
+
 ## Support and Resources
 
 - **Official Documentation**: https://docs.claude.com/claude/docs/skills
@@ -603,3 +889,7 @@ def safe_file_read(filepath):
 **Semantic Versioning**: Version numbering scheme (MAJOR.MINOR.PATCH)
 
 **Token**: Unit of text processed by Claude (affects performance and cost)
+
+**Evaluation-Driven Development**: Creating tests before writing documentation to ensure Skills solve real problems
+
+**Utility Scripts**: Pre-made scripts bundled with Skills for reliable, token-efficient operations

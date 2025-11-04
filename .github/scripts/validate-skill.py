@@ -89,6 +89,10 @@ class SkillValidator:
                     self.errors.append("Field 'name' must be a non-empty string")
                 elif len(name) > 64:
                     self.errors.append(f"Field 'name' exceeds 64 characters (found {len(name)})")
+                elif not re.match(r'^[a-z0-9-]+$', name):
+                    self.errors.append(f"Field 'name' must use lowercase letters, numbers, and hyphens only (found: '{name}')")
+                elif 'anthropic' in name.lower() or 'claude' in name.lower():
+                    self.errors.append(f"Field 'name' cannot contain reserved words 'anthropic' or 'claude' (found: '{name}')")
                 else:
                     print(f"✓ Skill name: '{name}'")
 
@@ -98,8 +102,8 @@ class SkillValidator:
                 description = frontmatter['description']
                 if not isinstance(description, str) or not description.strip():
                     self.errors.append("Field 'description' must be a non-empty string")
-                elif len(description) > 200:
-                    self.errors.append(f"Field 'description' exceeds 200 characters (found {len(description)})")
+                elif len(description) > 1024:
+                    self.errors.append(f"Field 'description' exceeds 1024 characters (found {len(description)})")
                 else:
                     print(f"✓ Description: '{description[:60]}...'")
 
