@@ -1,6 +1,114 @@
 # Skill Creator - Technical Reference
 
-This document provides detailed technical information for creating Custom Skills. It's referenced from Skill.md but contains supplemental details that aren't needed for every skill creation task.
+This document provides detailed technical information for creating Skills for both Claude Code and claude.ai. It's referenced from SKILL.md but contains supplemental details that aren't needed for every skill creation task.
+
+## Platform Comparison
+
+### Overview
+
+Skills work on two platforms: **Claude Code** (desktop agent) and **claude.ai** (web application). Most features are common, but some are platform-specific.
+
+### Feature Comparison Matrix
+
+| Feature | Claude Code | claude.ai | Notes |
+|---------|-------------|-----------|-------|
+| **SKILL.md format** | ✅ Yes | ✅ Yes | Identical format |
+| **YAML frontmatter** | ✅ Yes | ✅ Yes | Same fields |
+| **Progressive disclosure** | ✅ Yes | ✅ Yes | Same behavior |
+| **Scripts (Python/JS)** | ✅ Yes | ✅ Yes | Both support |
+| **Dependencies** | Auto-install | Install when needed | Both use PyPI/npm |
+| **Storage** | Filesystem | ZIP upload | Different methods |
+| **Distribution** | Plugin/git | Manual ZIP | Different methods |
+| **allowed-tools** | ✅ Yes | ❌ No | Claude Code only |
+| **Debug mode** | `claude --debug` | Review thinking | Different approaches |
+| **Skill updates** | Restart required | Re-upload ZIP | Different processes |
+
+### When to Use Each Platform
+
+**Claude Code is best for:**
+- Team collaboration via git (Project Skills)
+- Plugin distribution
+- Tool restrictions needed (allowed-tools)
+- Local development workflows
+- Frequent Skill iteration
+
+**claude.ai is best for:**
+- Individual users
+- Quick Skill distribution (share ZIP)
+- No installation required
+- Cross-platform access (any browser)
+
+**Both platforms if:**
+- Maximum compatibility desired
+- Targeting diverse user base
+- Skip Claude Code-only features (allowed-tools)
+
+## Skills Architecture (Common to Both Platforms)
+
+**What are Skills?**
+Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
+
+**Model-Invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This differs from slash commands (user-invoked).
+
+**Discovery**: Claude uses the `name` and `description` fields to decide when to use a Skill. The description is critical for proper discovery.
+
+**Progressive Disclosure**: Claude loads Skill information in stages to manage context efficiently:
+1. Metadata (always loaded): name, description
+2. SKILL.md body (when Skill used): core instructions
+3. Additional files (as needed): reference docs, templates, scripts
+
+## Storage and Distribution
+
+### Claude Code Storage Locations
+
+Skills in Claude Code can be stored in three locations:
+
+#### Personal Skills (`~/.claude/skills/`)
+- Available across all your projects
+- For individual workflows and preferences
+- Experimental Skills you're developing
+- Not shared with team members
+
+#### Project Skills (`.claude/skills/`)
+- Shared with your team via git
+- For team workflows and conventions
+- Automatically available to team members
+- Checked into version control
+
+#### Plugin Skills
+- Bundled with Claude Code plugins
+- Automatically available when plugin installed
+- Recommended for team distribution
+- Managed through plugin system
+
+### claude.ai Distribution
+
+Skills for claude.ai are distributed as ZIP files:
+
+**Creation:**
+```bash
+zip -r skill-name.zip skill-name/
+```
+
+**Expected structure:**
+```
+skill-name.zip
+  └── skill-name/
+      ├── SKILL.md
+      ├── reference.md
+      └── scripts/
+```
+
+**Upload process:**
+1. Navigate to Settings > Capabilities
+2. Upload ZIP file
+3. Enable the Skill
+4. Start using it
+
+**Team sharing:**
+- Share ZIP via email, file sharing, or git repository
+- Each user manually uploads to their account
+- No automatic updates (re-upload for changes)
 
 ## YAML Frontmatter Specification
 
@@ -9,27 +117,31 @@ This document provides detailed technical information for creating Custom Skills
 #### name
 - **Type**: String
 - **Max length**: 64 characters
-- **Format**: Human-readable display name
+- **Format**: lowercase-with-hyphens only
+- **Restrictions**: Cannot contain "anthropic" or "claude"
+- **Recommendation**: Use gerund form (verb + -ing)
 - **Examples**:
-  - ✅ "Brand Guidelines"
-  - ✅ "Data Analysis Pipeline"
-  - ❌ "BrandGuidelinesForMarketingTeamAndSalesTeamAndEveryoneElse" (too long)
+  - ✅ "processing-pdfs"
+  - ✅ "analyzing-spreadsheets"
+  - ❌ "Brand Guidelines" (not lowercase-with-hyphens)
+  - ❌ "BrandGuidelinesForMarketingTeamAndSalesTeam" (too long, wrong format)
 
 #### description
 - **Type**: String
-- **Max length**: 200 characters
+- **Max length**: 1024 characters
 - **Purpose**: Claude uses this to determine when to invoke the skill
-- **Format**: Clear, specific statement of when to use the skill
+- **Format**: Third person, includes both what it does AND when to use it
+- **Must include**: Specific triggers and keywords
 - **Best practices**:
-  - Use action verbs
+  - Always use third person ("Processes files..." not "I can help...")
   - Be specific about scenarios
   - Mention key domains or contexts
-  - Avoid vague terms
+  - Include trigger terms users would mention
 - **Examples**:
-  - ✅ "Apply Acme Corp brand guidelines to presentations and documents, including official colors, fonts, and logo usage"
-  - ✅ "Process CSV data files to generate statistical reports with visualizations and export to multiple formats"
-  - ❌ "Helps with stuff" (too vague)
-  - ❌ "Use this skill when you need to do things related to our company brand and maybe some other related tasks" (too long, unfocused)
+  - ✅ "Extracts text and tables from PDF files, fills forms, merges documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction."
+  - ✅ "Analyzes Excel spreadsheets, creates pivot tables, generates charts. Use when analyzing Excel files, spreadsheets, tabular data, or .xlsx files."
+  - ❌ "Helps with stuff" (too vague, no triggers)
+  - ❌ "I can help you with documents" (first person, vague)
 
 ### Optional Fields
 
@@ -45,9 +157,35 @@ This document provides detailed technical information for creating Custom Skills
 - **Examples**:
   - Python: `python>=3.8, pandas>=1.5.0, numpy>=1.21.0`
   - JavaScript: `node>=16.0.0, axios>=1.0.0`
-- **Notes**:
-  - Claude/Claude Code can install from PyPI and npm
-  - API Skills require pre-installed dependencies
+- **Claude Code behavior**:
+  - Automatically installs required packages (or asks for permission)
+  - Packages must be available from PyPI (Python) or npm (Node.js)
+  - Installation happens when Skill is first used
+
+#### allowed-tools
+- **Type**: String (comma-separated list of tool names)
+- **Purpose**: Restricts which tools Claude can use when this Skill is active
+- **Claude Code only**: This field is only supported in Claude Code Agent Skills
+- **Behavior**:
+  - When specified: Claude can only use listed tools without asking permission
+  - When not specified: Claude follows standard permission model
+- **Use cases**:
+  - Read-only Skills that shouldn't modify files
+  - Skills with limited scope (e.g., only data analysis)
+  - Security-sensitive workflows
+- **Available tools**: Read, Write, Edit, Bash, Grep, Glob, WebFetch, WebSearch, TodoWrite, and others
+- **Examples**:
+  - Read-only: `allowed-tools: Read, Grep, Glob`
+  - Data analysis: `allowed-tools: Read, Bash`
+  - Code review: `allowed-tools: Read, Grep, Glob`
+- **Example frontmatter**:
+```yaml
+---
+name: safe-file-reader
+description: Read files without making changes. Use when you need read-only file access.
+allowed-tools: Read, Grep, Glob
+---
+```
 
 ## File Naming Conventions
 
@@ -371,22 +509,52 @@ skill-name/resources/...
 skill-name/scripts/...
 ```
 
-## Troubleshooting Guide
+## Troubleshooting Guide for Claude Code Agent Skills
 
-### Skill Not Being Invoked
+### Skill Not Being Discovered
 
-**Symptom**: Claude doesn't use the skill when expected
+**Symptom**: Claude doesn't use the Skill when expected (autonomous invocation failure)
+
+**Claude Code specific checks**:
+1. **Verify file location**:
+   ```bash
+   # Personal Skills
+   ls ~/.claude/skills/your-skill-name/SKILL.md
+
+   # Project Skills
+   ls .claude/skills/your-skill-name/SKILL.md
+   ```
+
+2. **Check YAML syntax**:
+   ```bash
+   # View frontmatter
+   cat ~/.claude/skills/your-skill-name/SKILL.md | head -n 15
+   ```
+   - Must start with `---` on line 1
+   - Must end with `---` before Markdown content
+   - No tabs (use spaces for indentation)
+   - Quoted strings if they contain special characters
+
+3. **Run debug mode**:
+   ```bash
+   claude --debug
+   ```
+   This shows Skill loading errors and discovery decisions.
+
+4. **Restart Claude Code**:
+   - Changes to Skills require restarting Claude Code
+   - Plugin Skills require plugin reinstall/update
 
 **Diagnosis**:
-1. Check Claude's thinking for why skill wasn't selected
-2. Review description for specificity
-3. Verify skill is enabled in Settings
+1. Check if description is too vague
+2. Review if trigger terms match user's language
+3. Verify Skill is in correct directory
 
 **Solutions**:
-- Make description more specific
-- Add more trigger scenarios
-- Reduce description to focus on primary use case
-- Test with exact phrases from description
+- Make description more specific with clear triggers
+- Include exact keywords users would mention
+- Test with phrases that match description
+- Example: If description says "PDF files", ask "Can you help with this PDF?"
 
 ### Skill Loads But Doesn't Work
 
@@ -583,6 +751,292 @@ def safe_file_read(filepath):
 - Use efficient libraries (pandas, numpy)
 - Add progress indicators for long operations
 
+## Evaluation and Iteration
+
+### Build Evaluations First
+Create evaluations BEFORE writing extensive documentation to ensure your Skill solves real problems.
+
+**Evaluation-driven development:**
+1. **Identify gaps**: Run Claude on tasks without the Skill, document failures
+2. **Create evaluations**: Build 3+ scenarios testing these gaps
+3. **Establish baseline**: Measure Claude's performance without the Skill
+4. **Write minimal instructions**: Create just enough to pass evaluations
+5. **Iterate**: Execute evaluations, compare, refine
+
+**Evaluation structure example:**
+```json
+{
+  "skills": ["pdf-processing"],
+  "query": "Extract all text from this PDF and save to output.txt",
+  "files": ["test-files/document.pdf"],
+  "expected_behavior": [
+    "Successfully reads the PDF using appropriate tool",
+    "Extracts text from all pages without missing content",
+    "Saves to output.txt in readable format"
+  ]
+}
+```
+
+### Develop Skills Iteratively with Claude
+Use one Claude instance ("Claude A") to create Skills, another ("Claude B") to test them.
+
+**Creating a new Skill:**
+1. **Complete task without Skill**: Work through problem with Claude A using normal prompting
+2. **Identify reusable pattern**: Notice what context you repeatedly provide
+3. **Ask Claude A to create Skill**: "Create a Skill that captures this pattern"
+4. **Review for conciseness**: Remove unnecessary explanations
+5. **Improve architecture**: Ask Claude A to organize content effectively
+6. **Test on similar tasks**: Use Skill with Claude B on related use cases
+7. **Iterate based on observation**: Return to Claude A with specifics about Claude B's behavior
+
+**Iterating on existing Skills:**
+1. **Use Skill in real workflows**: Give Claude B actual tasks
+2. **Observe behavior**: Note where it struggles or succeeds
+3. **Return to Claude A**: Share current Skill and describe observations
+4. **Review suggestions**: Claude A suggests improvements
+5. **Apply and test**: Update Skill, test with Claude B again
+6. **Repeat based on usage**: Continue observe-refine-test cycle
+
+**Why this works**: Claude A understands agent needs, you provide domain expertise, Claude B reveals gaps through real usage.
+
+### Observe How Claude Navigates Skills
+Pay attention to how Claude uses Skills in practice:
+- **Unexpected exploration paths**: Structure might not be intuitive
+- **Missed connections**: Links need to be more explicit
+- **Overreliance on sections**: Content might belong in main Skill.md
+- **Ignored content**: File might be unnecessary or poorly signaled
+
+The `name` and `description` in metadata are critical—Claude uses these to decide whether to trigger the Skill.
+
+## Content Guidelines
+
+### Avoid Time-Sensitive Information
+Don't include information that will become outdated:
+
+**Bad (time-sensitive):**
+```markdown
+If you're doing this before August 2025, use the old API.
+```
+
+**Good (use "old patterns" section):**
+```markdown
+## Current method
+Use the v2 API endpoint: `api.example.com/v2/messages`
+
+## Old patterns
+<details>
+<summary>Legacy v1 API (deprecated 2025-08)</summary>
+The v1 API used: `api.example.com/v1/messages`
+This endpoint is no longer supported.
+</details>
+```
+
+### Use Consistent Terminology
+Choose one term and use it throughout:
+
+**Good - Consistent:**
+- Always "API endpoint"
+- Always "field"
+- Always "extract"
+
+**Bad - Inconsistent:**
+- Mix "API endpoint", "URL", "API route", "path"
+- Mix "field", "box", "element", "control"
+
+### Structure Longer Reference Files
+For files longer than 100 lines, include table of contents at the top:
+
+```markdown
+# API Reference
+
+## Contents
+- Authentication and setup
+- Core methods (create, read, update, delete)
+- Advanced features (batch operations, webhooks)
+- Error handling patterns
+- Code examples
+
+## Authentication and setup
+...
+```
+
+## Advanced: Skills with Executable Code
+
+### Solve, Don't Punt
+When writing scripts, handle error conditions rather than punting to Claude.
+
+**Good (handles errors):**
+```python
+def process_file(path):
+    """Process a file, creating if it doesn't exist."""
+    try:
+        with open(path) as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"File {path} not found, creating default")
+        with open(path, 'w') as f:
+            f.write('')
+        return ''
+    except PermissionError:
+        print(f"Cannot access {path}, using default")
+        return ''
+```
+
+**Bad (punts to Claude):**
+```python
+def process_file(path):
+    # Just fail and let Claude figure it out
+    return open(path).read()
+```
+
+Document configuration parameters (avoid "voodoo constants"):
+
+**Good:**
+```python
+# HTTP requests typically complete within 30 seconds
+# Longer timeout accounts for slow connections
+REQUEST_TIMEOUT = 30
+
+# Three retries balances reliability vs speed
+# Most intermittent failures resolve by second retry
+MAX_RETRIES = 3
+```
+
+**Bad:**
+```python
+TIMEOUT = 47  # Why 47?
+RETRIES = 5   # Why 5?
+```
+
+### Provide Utility Scripts
+Pre-made scripts offer advantages over generated code:
+- More reliable
+- Save tokens (no code in context)
+- Save time (no generation)
+- Ensure consistency
+
+Make clear whether Claude should:
+- **Execute script** (most common): "Run analyze_form.py to extract fields"
+- **Read as reference** (for complex logic): "See analyze_form.py for the algorithm"
+
+### Use Visual Analysis
+When inputs can be rendered as images, have Claude analyze them:
+
+```markdown
+## Form layout analysis
+1. Convert PDF to images: `python scripts/pdf_to_images.py form.pdf`
+2. Analyze each page image to identify form fields
+3. Claude can see field locations and types visually
+```
+
+### Create Verifiable Intermediate Outputs
+For complex, open-ended tasks, use "plan-validate-execute" pattern:
+
+**Example: Updating 50 form fields**
+Without validation, Claude might reference non-existent fields or miss required fields.
+
+**Solution: Add intermediate validation**
+1. Analyze form
+2. Create plan file (changes.json)
+3. Validate plan with script
+4. Execute changes
+5. Verify output
+
+**Why this works:**
+- Catches errors early
+- Machine-verifiable
+- Reversible planning
+- Clear debugging
+
+Make validation scripts verbose with specific error messages.
+
+### Package Dependencies
+List required packages in Skill.md. Skills run in code execution environment:
+- **claude.ai**: Can install from npm and PyPI, pull from GitHub
+- **Anthropic API**: No network access, no runtime installation
+
+### MCP Tool References
+Always use fully qualified tool names to avoid "tool not found" errors.
+
+**Format:** `ServerName:tool_name`
+
+**Example:**
+```markdown
+Use the BigQuery:bigquery_schema tool to retrieve table schemas.
+Use the GitHub:create_issue tool to create issues.
+```
+
+Without the server prefix, Claude may fail to locate the tool.
+
+### Avoid Assuming Tools Are Installed
+Don't assume packages are available:
+
+**Bad:**
+```markdown
+"Use the pdf library to process the file."
+```
+
+**Good:**
+```markdown
+"Install required package: `pip install pypdf`
+
+Then use it:
+```python
+from pypdf import PdfReader
+reader = PdfReader("file.pdf")
+```
+```
+
+### Runtime Environment
+Skills run in code execution environment with filesystem access, bash commands, and code execution.
+
+**How this affects authoring:**
+- **Metadata pre-loaded**: name and description loaded at startup into system prompt
+- **Files read on-demand**: Claude uses bash/Read tools to access Skill.md and other files when needed
+- **Scripts executed efficiently**: Scripts can run via bash without loading full contents into context
+- **No context penalty for large files**: Reference files don't consume tokens until read
+- **File paths matter**: Claude navigates like a filesystem—use forward slashes
+- **Name files descriptively**: Use `form_validation_rules.md`, not `doc2.md`
+- **Organize for discovery**: Structure by domain/feature (good: `reference/finance.md`, bad: `docs/file1.md`)
+
+## Checklist for Effective Skills
+
+Before sharing a Skill, verify:
+
+### Core Quality
+- [ ] Description is specific and includes key terms
+- [ ] Description includes both what Skill does and when to use it
+- [ ] Name uses lowercase-with-hyphens format
+- [ ] Name is ≤ 64 characters
+- [ ] Description is ≤ 1024 characters
+- [ ] Skill.md body is under 500 lines
+- [ ] Additional details are in separate files (if needed)
+- [ ] No time-sensitive information (or in "old patterns" section)
+- [ ] Consistent terminology throughout
+- [ ] Examples are concrete, not abstract
+- [ ] File references are one level deep
+- [ ] Progressive disclosure used appropriately
+- [ ] Workflows have clear steps
+
+### Code and Scripts
+- [ ] Scripts solve problems rather than punt to Claude
+- [ ] Error handling is explicit and helpful
+- [ ] No "voodoo constants" (all values justified)
+- [ ] Required packages listed and verified as available
+- [ ] Scripts have clear documentation
+- [ ] No Windows-style paths (all forward slashes)
+- [ ] Validation/verification steps for critical operations
+- [ ] Feedback loops included for quality-critical tasks
+
+### Testing
+- [ ] At least three evaluations created
+- [ ] Tested with Haiku, Sonnet, and Opus
+- [ ] Tested with real usage scenarios
+- [ ] Team feedback incorporated (if applicable)
+- [ ] Description accurately triggers Skill
+- [ ] Claude loads Skill when expected
+- [ ] Skill produces correct results
+
 ## Support and Resources
 
 - **Official Documentation**: https://docs.claude.com/claude/docs/skills
@@ -603,3 +1057,7 @@ def safe_file_read(filepath):
 **Semantic Versioning**: Version numbering scheme (MAJOR.MINOR.PATCH)
 
 **Token**: Unit of text processed by Claude (affects performance and cost)
+
+**Evaluation-Driven Development**: Creating tests before writing documentation to ensure Skills solve real problems
+
+**Utility Scripts**: Pre-made scripts bundled with Skills for reliable, token-efficient operations
