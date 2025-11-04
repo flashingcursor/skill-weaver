@@ -8,15 +8,41 @@ dependencies: none
 # Skill Creator
 
 ## Overview
-This Skill helps users create new custom Skills for Claude following official best practices. It guides through creating Skill.md files, structuring directories, adding resources, and ensuring quality.
+This Skill helps users create Agent Skills for Claude Code following official best practices. It guides through creating SKILL.md files, structuring directories, adding resources, and ensuring quality.
+
+**What are Agent Skills?**
+Agent Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
+
+**Model-invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This is different from slash commands (which you explicitly type to trigger).
 
 ## When to Use This Skill
 Use when:
 - User asks to create a new Skill
-- User wants to build a custom workflow for Claude
+- User wants to build a custom workflow for Claude Code
 - User needs help structuring a Skill directory
 - User asks about Skill authoring best practices
-- User wants to package or test a Skill
+- User wants to package, test, or share a Skill
+
+## Skill Storage Locations
+
+Skills are stored in three locations:
+
+**Personal Skills** (`~/.claude/skills/`):
+- Available across all your projects
+- For individual workflows and preferences
+- Experimental Skills you're developing
+- Personal productivity tools
+
+**Project Skills** (`.claude/skills/`):
+- Shared with your team via git
+- For team workflows and conventions
+- Project-specific expertise
+- Automatically available to team members
+
+**Plugin Skills**:
+- Bundled with Claude Code plugins
+- Automatically available when plugin installed
+- Recommended for team distribution
 
 ## Core Principles
 
@@ -44,29 +70,42 @@ Skills affect models differently. Test with Haiku, Sonnet, and Opus. What works 
 
 ### Step 1: Gather Requirements
 Ask about:
-1. **Purpose**: What specific task should this Skill solve?
-2. **Name**: What should it be called? (lowercase-with-hyphens, max 64 chars, use gerund form like "processing-pdfs")
-3. **Description**: When should Claude use it? (max 1024 chars, be specific, include triggers)
-4. **Scope**: What inputs/outputs are expected?
-5. **Resources**: Will it need reference files, scripts, or external data?
-6. **Dependencies**: Does it require specific packages?
+1. **Storage location**: Personal (~/.claude/skills/), Project (.claude/skills/), or Plugin?
+2. **Purpose**: What specific task should this Skill solve?
+3. **Name**: What should it be called? (lowercase-with-hyphens, max 64 chars, use gerund form like "processing-pdfs")
+4. **Description**: When should Claude use it? (max 1024 chars, be specific, include triggers)
+5. **Scope**: What inputs/outputs are expected?
+6. **Tool restrictions**: Should it limit which tools Claude can use? (allowed-tools field)
+7. **Resources**: Will it need reference files, scripts, or external data?
+8. **Dependencies**: Does it require specific packages?
 
 ### Step 2: Create Directory Structure
-Create a directory with the Skill name containing:
-```
-skill-name/
-├── Skill.md           # Required: Main Skill file
-├── REFERENCE.md       # Optional: Supplemental information
-├── resources/         # Optional: Reference files
-│   ├── examples/
-│   └── templates/
-└── scripts/          # Optional: Executable code
-    ├── script.py
-    └── script.js
+
+**For Personal Skills:**
+```bash
+mkdir -p ~/.claude/skills/skill-name
 ```
 
-### Step 3: Write the Skill.md File
-The Skill.md file must include:
+**For Project Skills:**
+```bash
+mkdir -p .claude/skills/skill-name
+```
+
+**Directory contents:**
+```
+skill-name/
+├── SKILL.md           # Required: Main Skill file (note: SKILL.md not Skill.md)
+├── reference.md       # Optional: Supplemental information
+├── examples.md        # Optional: Extended examples
+├── templates/         # Optional: Template files
+│   └── template.txt
+└── scripts/          # Optional: Executable code
+    ├── helper.py
+    └── validate.py
+```
+
+### Step 3: Write the SKILL.md File
+The SKILL.md file must include:
 
 #### Required YAML Frontmatter
 ```yaml
@@ -75,6 +114,7 @@ name: skill-name
 description: What the Skill does and when to use it. Include specific triggers and contexts. Use third person. Max 1024 characters.
 version: 1.0.0
 dependencies: package>=version, another-package>=version
+allowed-tools: Read, Grep, Glob  # Optional: restrict which tools Claude can use
 ---
 ```
 
@@ -89,6 +129,18 @@ dependencies: package>=version, another-package>=version
 - Third person: "Processes files..." not "I can help..."
 - Include what it does AND when to use it
 - Mention specific triggers/keywords
+
+**Dependencies handling:**
+- Claude Code will automatically install required packages (or ask for permission)
+- List packages in dependencies field
+- Packages must be available from PyPI (Python) or npm (Node.js)
+
+**Tool restrictions (allowed-tools):**
+- Optional field to limit which tools Claude can use when Skill is active
+- Useful for read-only Skills or security-sensitive workflows
+- When specified, Claude can only use listed tools without asking permission
+- If not specified, Claude follows standard permission model
+- Example tools: Read, Write, Edit, Bash, Grep, Glob, WebFetch
 
 #### Markdown Body Structure
 ```markdown
@@ -132,38 +184,54 @@ For advanced Skills that need executable code:
 
 **Note:** Claude and Claude Code can install packages from standard repositories when loading Skills.
 
-### Step 6: Package the Skill
-To share or upload the Skill:
-1. Ensure the folder name matches the Skill name
-2. Create a ZIP file of the folder
-3. The ZIP should contain the Skill folder as its root
+### Step 6: Share the Skill
 
-**Correct structure:**
-```
-my-skill.zip
-  └── my-skill/
-      ├── Skill.md
-      └── resources/
+**Recommended: Share via Plugin**
+The best way to share Skills with your team is through Claude Code plugins:
+1. Create a plugin with Skills in the `skills/` directory
+2. Publish to a marketplace
+3. Team members install the plugin
+4. Skills automatically available
+
+**Alternative: Share via Git (Project Skills)**
+1. Place Skill in `.claude/skills/skill-name/`
+2. Commit to git: `git add .claude/skills/ && git commit -m "Add skill"`
+3. Team members get Skills automatically when they pull: `git pull`
+
+**Personal Skills:**
+- Stay local to your machine
+- Not shared automatically
+- Use for individual workflows
+
+### Step 7: Test the Skill
+
+**Test with matching requests:**
+Skills are autonomously invoked—Claude decides when to use them based on the description.
+
+Ask questions that match your description:
+```bash
+# If description mentions "PDF files"
+"Can you help me extract text from this PDF?"
+
+# Claude automatically uses your Skill if it matches
 ```
 
-**Incorrect structure:**
-```
-my-skill.zip
-  └── Skill.md (files directly in ZIP root - WRONG)
+**Verify Skill discovery:**
+```bash
+# View all available Skills
+"What Skills are available?"
+
+# List Skills from all sources
+ls ~/.claude/skills/      # Personal
+ls .claude/skills/        # Project (if in project)
 ```
 
-### Step 7: Testing
-Before finalizing:
-1. Review Skill.md for clarity and completeness
-2. Verify the description accurately reflects when Claude should use the Skill
-3. Check all referenced files exist in correct locations
-4. Test with example prompts to ensure proper invocation
-
-After uploading to Claude:
-1. Enable the Skill in Settings > Capabilities
-2. Try various prompts that should trigger it
-3. Review Claude's thinking to confirm it loads correctly
-4. Iterate on the description if Claude doesn't use it as expected
+**Debug if Skill doesn't activate:**
+1. **Check description specificity**: Too vague? Add specific triggers
+2. **Verify file path**: Personal (~/.claude/skills/) or Project (.claude/skills/)
+3. **Check YAML syntax**: Validate frontmatter format
+4. **Run debug mode**: `claude --debug` to see loading errors
+5. **Restart Claude Code**: Changes require restart to take effect
 
 ## Best Practices
 
@@ -253,6 +321,67 @@ Output: [expected output]
 - ❌ Inconsistent terminology: Pick one term and stick to it
 - ❌ Deeply nested references: Keep references one level deep from Skill.md
 
+## Example Skill Patterns
+
+### Simple Skill (commit message helper)
+```yaml
+---
+name: generating-commit-messages
+description: Generates clear commit messages from git diffs. Use when writing commit messages or reviewing staged changes.
+---
+
+# Generating Commit Messages
+
+## Instructions
+1. Run `git diff --staged` to see changes
+2. Suggest a commit message with:
+   - Summary under 50 characters
+   - Detailed description
+   - Affected components
+```
+
+### Read-Only Skill (code reviewer)
+```yaml
+---
+name: code-reviewer
+description: Review code for best practices and potential issues. Use when reviewing code, checking PRs, or analyzing code quality.
+allowed-tools: Read, Grep, Glob  # Restrict to read-only operations
+---
+
+# Code Reviewer
+
+## Instructions
+1. Read target files using Read tool
+2. Search for patterns using Grep
+3. Find related files using Glob
+4. Provide detailed feedback on code quality
+```
+
+### Multi-File Skill (PDF processing)
+```
+pdf-processing/
+├── SKILL.md
+├── forms.md          # Form-filling guide (loaded on-demand)
+├── reference.md      # API reference (loaded as needed)
+└── scripts/
+    ├── fill_form.py
+    └── validate.py
+```
+
+```yaml
+---
+name: pdf-processing
+description: Extract text, fill forms, merge PDFs. Use when working with PDF files, forms, or document extraction.
+dependencies: pypdf>=3.0.0, pdfplumber>=0.9.0
+---
+
+# PDF Processing
+
+## Quick start
+For form filling, see [forms.md](forms.md).
+For API reference, see [reference.md](reference.md).
+```
+
 ## Security Considerations
 When adding scripts to Skills:
 - ⚠️ **Never hardcode sensitive information** (API keys, passwords)
@@ -260,6 +389,7 @@ When adding scripts to Skills:
 - Validate inputs in scripts
 - Follow principle of least privilege
 - Document security requirements
+- Use **allowed-tools** to restrict capabilities when appropriate
 
 ## Templates
 

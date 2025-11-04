@@ -1,6 +1,42 @@
-# Skill Creator - Technical Reference
+# Skill Creator - Technical Reference for Claude Code Agent Skills
 
-This document provides detailed technical information for creating Custom Skills. It's referenced from Skill.md but contains supplemental details that aren't needed for every skill creation task.
+This document provides detailed technical information for creating Claude Code Agent Skills. It's referenced from SKILL.md but contains supplemental details that aren't needed for every skill creation task.
+
+## Agent Skills Architecture
+
+**What are Agent Skills?**
+Agent Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
+
+**Model-Invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This differs from slash commands (user-invoked).
+
+**Discovery**: Claude uses the `name` and `description` fields to decide when to use a Skill. The description is critical for proper discovery.
+
+**Progressive Disclosure**: Claude loads Skill information in stages to manage context efficiently:
+1. Metadata (always loaded): name, description
+2. SKILL.md body (when Skill used): core instructions
+3. Additional files (as needed): reference docs, templates, scripts
+
+## Storage Locations
+
+Skills can be stored in three locations:
+
+### Personal Skills (`~/.claude/skills/`)
+- Available across all your projects
+- For individual workflows and preferences
+- Experimental Skills you're developing
+- Not shared with team members
+
+### Project Skills (`.claude/skills/`)
+- Shared with your team via git
+- For team workflows and conventions
+- Automatically available to team members
+- Checked into version control
+
+### Plugin Skills
+- Bundled with Claude Code plugins
+- Automatically available when plugin installed
+- Recommended for team distribution
+- Managed through plugin system
 
 ## YAML Frontmatter Specification
 
@@ -9,27 +45,31 @@ This document provides detailed technical information for creating Custom Skills
 #### name
 - **Type**: String
 - **Max length**: 64 characters
-- **Format**: Human-readable display name
+- **Format**: lowercase-with-hyphens only
+- **Restrictions**: Cannot contain "anthropic" or "claude"
+- **Recommendation**: Use gerund form (verb + -ing)
 - **Examples**:
-  - ✅ "Brand Guidelines"
-  - ✅ "Data Analysis Pipeline"
-  - ❌ "BrandGuidelinesForMarketingTeamAndSalesTeamAndEveryoneElse" (too long)
+  - ✅ "processing-pdfs"
+  - ✅ "analyzing-spreadsheets"
+  - ❌ "Brand Guidelines" (not lowercase-with-hyphens)
+  - ❌ "BrandGuidelinesForMarketingTeamAndSalesTeam" (too long, wrong format)
 
 #### description
 - **Type**: String
-- **Max length**: 200 characters
+- **Max length**: 1024 characters
 - **Purpose**: Claude uses this to determine when to invoke the skill
-- **Format**: Clear, specific statement of when to use the skill
+- **Format**: Third person, includes both what it does AND when to use it
+- **Must include**: Specific triggers and keywords
 - **Best practices**:
-  - Use action verbs
+  - Always use third person ("Processes files..." not "I can help...")
   - Be specific about scenarios
   - Mention key domains or contexts
-  - Avoid vague terms
+  - Include trigger terms users would mention
 - **Examples**:
-  - ✅ "Apply Acme Corp brand guidelines to presentations and documents, including official colors, fonts, and logo usage"
-  - ✅ "Process CSV data files to generate statistical reports with visualizations and export to multiple formats"
-  - ❌ "Helps with stuff" (too vague)
-  - ❌ "Use this skill when you need to do things related to our company brand and maybe some other related tasks" (too long, unfocused)
+  - ✅ "Extracts text and tables from PDF files, fills forms, merges documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction."
+  - ✅ "Analyzes Excel spreadsheets, creates pivot tables, generates charts. Use when analyzing Excel files, spreadsheets, tabular data, or .xlsx files."
+  - ❌ "Helps with stuff" (too vague, no triggers)
+  - ❌ "I can help you with documents" (first person, vague)
 
 ### Optional Fields
 
@@ -45,9 +85,35 @@ This document provides detailed technical information for creating Custom Skills
 - **Examples**:
   - Python: `python>=3.8, pandas>=1.5.0, numpy>=1.21.0`
   - JavaScript: `node>=16.0.0, axios>=1.0.0`
-- **Notes**:
-  - Claude/Claude Code can install from PyPI and npm
-  - API Skills require pre-installed dependencies
+- **Claude Code behavior**:
+  - Automatically installs required packages (or asks for permission)
+  - Packages must be available from PyPI (Python) or npm (Node.js)
+  - Installation happens when Skill is first used
+
+#### allowed-tools
+- **Type**: String (comma-separated list of tool names)
+- **Purpose**: Restricts which tools Claude can use when this Skill is active
+- **Claude Code only**: This field is only supported in Claude Code Agent Skills
+- **Behavior**:
+  - When specified: Claude can only use listed tools without asking permission
+  - When not specified: Claude follows standard permission model
+- **Use cases**:
+  - Read-only Skills that shouldn't modify files
+  - Skills with limited scope (e.g., only data analysis)
+  - Security-sensitive workflows
+- **Available tools**: Read, Write, Edit, Bash, Grep, Glob, WebFetch, WebSearch, TodoWrite, and others
+- **Examples**:
+  - Read-only: `allowed-tools: Read, Grep, Glob`
+  - Data analysis: `allowed-tools: Read, Bash`
+  - Code review: `allowed-tools: Read, Grep, Glob`
+- **Example frontmatter**:
+```yaml
+---
+name: safe-file-reader
+description: Read files without making changes. Use when you need read-only file access.
+allowed-tools: Read, Grep, Glob
+---
+```
 
 ## File Naming Conventions
 
@@ -371,22 +437,52 @@ skill-name/resources/...
 skill-name/scripts/...
 ```
 
-## Troubleshooting Guide
+## Troubleshooting Guide for Claude Code Agent Skills
 
-### Skill Not Being Invoked
+### Skill Not Being Discovered
 
-**Symptom**: Claude doesn't use the skill when expected
+**Symptom**: Claude doesn't use the Skill when expected (autonomous invocation failure)
+
+**Claude Code specific checks**:
+1. **Verify file location**:
+   ```bash
+   # Personal Skills
+   ls ~/.claude/skills/your-skill-name/SKILL.md
+
+   # Project Skills
+   ls .claude/skills/your-skill-name/SKILL.md
+   ```
+
+2. **Check YAML syntax**:
+   ```bash
+   # View frontmatter
+   cat ~/.claude/skills/your-skill-name/SKILL.md | head -n 15
+   ```
+   - Must start with `---` on line 1
+   - Must end with `---` before Markdown content
+   - No tabs (use spaces for indentation)
+   - Quoted strings if they contain special characters
+
+3. **Run debug mode**:
+   ```bash
+   claude --debug
+   ```
+   This shows Skill loading errors and discovery decisions.
+
+4. **Restart Claude Code**:
+   - Changes to Skills require restarting Claude Code
+   - Plugin Skills require plugin reinstall/update
 
 **Diagnosis**:
-1. Check Claude's thinking for why skill wasn't selected
-2. Review description for specificity
-3. Verify skill is enabled in Settings
+1. Check if description is too vague
+2. Review if trigger terms match user's language
+3. Verify Skill is in correct directory
 
 **Solutions**:
-- Make description more specific
-- Add more trigger scenarios
-- Reduce description to focus on primary use case
-- Test with exact phrases from description
+- Make description more specific with clear triggers
+- Include exact keywords users would mention
+- Test with phrases that match description
+- Example: If description says "PDF files", ask "Can you help with this PDF?"
 
 ### Skill Loads But Doesn't Work
 

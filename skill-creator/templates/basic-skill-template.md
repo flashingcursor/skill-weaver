@@ -2,10 +2,14 @@
 name: your-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates reports. Use when analyzing data, working with spreadsheets, or when user mentions CSV, data analysis, or reports."
 version: 1.0.0
+# Optional: Restrict which tools Claude can use when this Skill is active
+# allowed-tools: Read, Grep, Glob  # For read-only Skills
 ---
 
 # IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
 # IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
+# IMPORTANT: File must be named SKILL.md (uppercase SKILL)
+# IMPORTANT: Place in ~/.claude/skills/your-skill-name/ (personal) or .claude/skills/your-skill-name/ (project)
 
 # Your Skill Name
 
@@ -61,15 +65,28 @@ Claude should: "..."
 
 ## Best Practices Checklist
 Before publishing this Skill:
+
+### Core Quality
 - [ ] Name uses lowercase-with-hyphens (max 64 chars)
+- [ ] Name uses gerund form (processing-pdfs, analyzing-data)
 - [ ] Description includes what it does AND when to use it (max 1024 chars)
 - [ ] Description written in third person
-- [ ] Skill.md body under 500 lines
+- [ ] Description includes specific trigger keywords
+- [ ] File named SKILL.md (uppercase SKILL)
+- [ ] Placed in correct location (~/.claude/skills/ or .claude/skills/)
+- [ ] SKILL.md body under 500 lines
 - [ ] Examples are concrete, not abstract
 - [ ] Consistent terminology throughout
 - [ ] No Windows-style paths (use forward slashes)
 - [ ] No time-sensitive information
+- [ ] allowed-tools specified if tool restriction needed
+
+### Testing
 - [ ] Tested with target models (Haiku, Sonnet, Opus)
+- [ ] Description accurately triggers Skill (autonomous invocation works)
+- [ ] Tested with queries matching description keywords
+- [ ] Verified Skill appears in `"What Skills are available?"` query
+- [ ] Tested after restarting Claude Code
 
 ## Notes
 Additional context. Keep concise—only what Claude doesn't already know.

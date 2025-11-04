@@ -3,11 +3,16 @@ name: your-advanced-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates statistical reports with visualizations. Use when analyzing data, creating reports, working with spreadsheets, or when user mentions CSV, data analysis, statistics, or reports."
 version: 1.0.0
 dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
+# Optional: Restrict which tools Claude can use when this Skill is active
+# allowed-tools: Read, Bash  # For data analysis without file modifications
 ---
 
 # IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
 # IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
-# IMPORTANT: Skill.md body should stay under 500 lines - move details to REFERENCE.md
+# IMPORTANT: File must be named SKILL.md (uppercase SKILL)
+# IMPORTANT: SKILL.md body should stay under 500 lines - move details to reference.md
+# IMPORTANT: Place in ~/.claude/skills/your-skill-name/ (personal) or .claude/skills/your-skill-name/ (project)
+# IMPORTANT: Dependencies auto-installed by Claude Code when Skill is first used
 
 # Your Advanced Skill Name
 
@@ -202,15 +207,20 @@ Before publishing this Skill:
 
 ### Core Quality
 - [ ] Name uses lowercase-with-hyphens (max 64 chars)
+- [ ] Name uses gerund form (processing-pdfs, analyzing-data)
 - [ ] Description includes what it does AND when to use it (max 1024 chars)
 - [ ] Description written in third person
-- [ ] Skill.md body under 500 lines
-- [ ] Detailed content moved to REFERENCE.md
+- [ ] Description includes specific trigger keywords
+- [ ] File named SKILL.md (uppercase SKILL)
+- [ ] Placed in correct location (~/.claude/skills/ or .claude/skills/)
+- [ ] SKILL.md body under 500 lines
+- [ ] Detailed content moved to reference.md
 - [ ] Examples are concrete, not abstract
 - [ ] Consistent terminology throughout
 - [ ] File references are one level deep
 - [ ] No Windows-style paths (use forward slashes)
 - [ ] No time-sensitive information
+- [ ] allowed-tools specified if tool restriction needed
 
 ### Code and Scripts
 - [ ] Scripts solve problems rather than punt to Claude
@@ -224,7 +234,12 @@ Before publishing this Skill:
 - [ ] Created at least three evaluations
 - [ ] Tested with Haiku, Sonnet, and Opus
 - [ ] Tested with real usage scenarios
-- [ ] Description accurately triggers Skill
+- [ ] Description accurately triggers Skill (autonomous invocation works)
+- [ ] Tested with queries matching description keywords
+- [ ] Verified Skill appears in `"What Skills are available?"` query
+- [ ] Tested after restarting Claude Code
+- [ ] Verified dependencies install correctly
+- [ ] Tested allowed-tools restrictions (if specified)
 
 ## Version History
 - **1.0.0**: Initial release with [features]
