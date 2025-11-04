@@ -1,0 +1,250 @@
+name: Auto Release on Main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'skill-creator/**'
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    name: Check if New Version
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.compare.outputs.should_release }}
+      current_version: ${{ steps.extract.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Extract version from Skill.md
+        id: extract
+        run: |
+          VERSION=$(python -c "
+          import yaml
+          with open('skill-creator/Skill.md', 'r') as f:
+              content = f.read()
+              parts = content.split('---', 2)
+              if len(parts) >= 3:
+                  frontmatter = yaml.safe_load(parts[1])
+                  print(frontmatter.get('version', ''))
+          ")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version in Skill.md: $VERSION"
+
+      - name: Get latest release version
+        id: latest
+        run: |
+          LATEST=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "")
+          if [ -z "$LATEST" ]; then
+            echo "No previous releases found"
+            echo "version=0.0.0" >> $GITHUB_OUTPUT
+          else
+            # Remove 'v' prefix if present
+            LATEST_VERSION=${LATEST#v}
+            echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+            echo "Latest release version: $LATEST_VERSION"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT="${{ steps.extract.outputs.version }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+
+          echo "Comparing versions:"
+          echo "  Current: $CURRENT"
+          echo "  Latest:  $LATEST"
+
+          # Simple version comparison (works for semantic versioning and alpha/beta)
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "Versions are equal - no release needed"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          elif [ -z "$LATEST" ] || [ "$LATEST" = "0.0.0" ]; then
+            echo "No previous release - creating first release"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            # Use sort -V for version comparison
+            NEWER=$(printf "%s\n%s" "$LATEST" "$CURRENT" | sort -V | tail -n1)
+            if [ "$NEWER" = "$CURRENT" ] && [ "$CURRENT" != "$LATEST" ]; then
+              echo "Current version is newer - will create release"
+              echo "should_release=true" >> $GITHUB_OUTPUT
+            else
+              echo "Current version is not newer - no release needed"
+              echo "should_release=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  validate:
+    name: Validate Skill
+    runs-on: ubuntu-latest
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate Skill Structure
+        run: python .github/scripts/validate-skill.py skill-creator
+
+      - name: Check for secrets
+        run: |
+          echo "Scanning for potential hardcoded secrets..."
+          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+            echo "ERROR: Found potential hardcoded API key"
+            exit 1
+          fi
+          if grep -r -i "password\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+            echo "ERROR: Found potential hardcoded password"
+            exit 1
+          fi
+          echo "No obvious secrets found"
+
+      - name: Validate Python scripts
+        run: |
+          echo "Validating Python scripts..."
+          for script in skill-creator/scripts/*.py skill-creator/templates/*.py 2>/dev/null; do
+            if [ -f "$script" ]; then
+              echo "Checking $script"
+              python -m py_compile "$script"
+            fi
+          done
+
+      - name: Validate JavaScript scripts
+        run: |
+          echo "Checking JavaScript syntax..."
+          for script in skill-creator/scripts/*.js skill-creator/templates/*.js 2>/dev/null; do
+            if [ -f "$script" ]; then
+              echo "Checking $script"
+              node --check "$script"
+            fi
+          done
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [check-version, validate]
+    if: needs.check-version.outputs.should_release == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Package Skill
+        run: |
+          VERSION="${{ needs.check-version.outputs.current_version }}"
+          echo "Packaging skill-creator version $VERSION..."
+
+          # Create clean package
+          mkdir -p release-package
+          cp -r skill-creator release-package/
+          cd release-package/skill-creator
+
+          # Remove development files
+          find . -name ".DS_Store" -delete 2>/dev/null || true
+          find . -name "*.pyc" -delete 2>/dev/null || true
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name ".git*" -delete 2>/dev/null || true
+
+          cd ..
+          zip -r ../skill-creator-${VERSION}.zip skill-creator/ \
+            -x "*/.git/*" -x "*/__pycache__/*" -x "*.pyc" -x "*/.DS_Store"
+          cd ..
+
+          echo "Package created: skill-creator-${VERSION}.zip"
+          ls -lh skill-creator-${VERSION}.zip
+
+      - name: Verify ZIP structure
+        run: |
+          VERSION="${{ needs.check-version.outputs.current_version }}"
+          echo "Verifying ZIP structure..."
+          unzip -l skill-creator-${VERSION}.zip | head -20
+
+          # Test extraction
+          unzip -t skill-creator-${VERSION}.zip
+
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          VERSION="${{ needs.check-version.outputs.current_version }}"
+          python .github/scripts/generate-release-notes.py skill-creator "$VERSION" > release-notes.md
+
+          echo "Generated release notes:"
+          cat release-notes.md
+
+      - name: Create Git Tag
+        run: |
+          VERSION="${{ needs.check-version.outputs.current_version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${VERSION}" -m "Release version ${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.check-version.outputs.current_version }}
+          name: Skill Creator v${{ needs.check-version.outputs.current_version }}
+          body_path: release-notes.md
+          files: skill-creator-${{ needs.check-version.outputs.current_version }}.zip
+          draft: false
+          prerelease: ${{ contains(needs.check-version.outputs.current_version, 'alpha') || contains(needs.check-version.outputs.current_version, 'beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-creator-${{ needs.check-version.outputs.current_version }}
+          path: skill-creator-${{ needs.check-version.outputs.current_version }}.zip
+          retention-days: 90
+
+      - name: Release Summary
+        run: |
+          VERSION="${{ needs.check-version.outputs.current_version }}"
+          echo "🎉 Automatic Release Complete!"
+          echo "Version: v${VERSION}"
+          echo ""
+          echo "📦 Download the packaged skill from:"
+          echo "https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
+          echo ""
+          echo "🚀 Installation:"
+          echo "1. Download skill-creator-${VERSION}.zip"
+          echo "2. Upload to Claude via Settings > Capabilities"
+          echo "3. Enable the Skill Creator skill"
+          echo ""
+          echo "✨ Changes merged to main triggered this automatic release"
