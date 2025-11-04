@@ -1,7 +1,7 @@
 ---
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
-version: 1.0.0
+version: 0.1.0-alpha.1
 dependencies: none
 ---
 
