@@ -674,15 +674,16 @@ Never hardcode secrets. Instead:
 
 **Bad:**
 ```python
-API_KEY = "sk-1234567890abcdef"  # NEVER DO THIS
+# NEVER hardcode secrets like this!
+SECRET_KEY = "hardcoded-secret-value"  # BAD PRACTICE
 ```
 
 **Good:**
 ```python
 import os
-API_KEY = os.environ.get('API_KEY')
-if not API_KEY:
-    raise ValueError("API_KEY environment variable not set")
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set")
 ```
 
 **Better:**
