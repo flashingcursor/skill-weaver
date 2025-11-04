@@ -200,6 +200,121 @@ When creating skills with scripts:
 - [Example Skills Repository](https://github.com/anthropics/skills)
 - [Skill Authoring Best Practices](https://docs.claude.com/claude/docs/skill-authoring-best-practices)
 
+## CI/CD and Releases
+
+This repository includes automated workflows for validation, testing, and releases.
+
+### Automated Validation
+
+Every push and pull request automatically validates the skill structure:
+
+- ✓ YAML frontmatter validation (required fields, length limits)
+- ✓ Semantic versioning check
+- ✓ Security scanning (hardcoded secrets detection)
+- ✓ Python script syntax validation
+- ✓ JavaScript script syntax validation
+- ✓ Documentation completeness check
+- ✓ File reference validation
+
+**Workflow**: `.github/workflows/validate.yml`
+
+### Automated Releases
+
+Releases are automatically created when you push a version tag:
+
+```bash
+# Create and push a new version tag
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The release workflow will:
+
+1. **Validate** the skill structure
+2. **Update** version in Skill.md
+3. **Package** the skill into a ZIP file
+4. **Generate** release notes automatically
+5. **Create** a GitHub release with the package
+6. **Upload** artifacts for download
+
+**Workflow**: `.github/workflows/release.yml`
+
+### Manual Packaging
+
+You can also package the skill locally using the provided script:
+
+```bash
+# Package with default settings
+./scripts/package-skill.sh
+
+# Package with custom name
+./scripts/package-skill.sh skill-creator skill-creator-1.0.0
+```
+
+The script will:
+- Validate the skill structure
+- Clean up development files
+- Create a properly structured ZIP
+- Show package information
+- Provide next steps
+
+### CI/CD Scripts
+
+The repository includes several helper scripts:
+
+#### Validate Skill
+```bash
+python .github/scripts/validate-skill.py skill-creator
+```
+Validates skill structure, frontmatter, and references.
+
+#### Update Version
+```bash
+python .github/scripts/update-version.py skill-creator 1.2.0
+```
+Updates the version field in Skill.md frontmatter.
+
+#### Generate Release Notes
+```bash
+python .github/scripts/generate-release-notes.py skill-creator 1.2.0
+```
+Generates formatted release notes from skill metadata.
+
+### Release Process
+
+**For maintainers:**
+
+1. **Make your changes** to the skill
+2. **Update version** in Skill.md manually or let CI do it
+3. **Commit and push** your changes
+4. **Create a tag**:
+   ```bash
+   git tag v1.2.0 -m "Release version 1.2.0"
+   git push origin v1.2.0
+   ```
+5. **GitHub Actions** automatically creates the release
+6. **Download** the packaged skill from the release page
+
+**For users:**
+
+1. Go to the [Releases](../../releases) page
+2. Download the latest `skill-creator-*.zip` file
+3. Upload to Claude via Settings > Capabilities
+4. Enable and start using the skill
+
+### Versioning Guidelines
+
+We follow [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** (1.0.0 → 2.0.0): Breaking changes
+- **MINOR** (1.0.0 → 1.1.0): New features, backward compatible
+- **PATCH** (1.0.0 → 1.0.1): Bug fixes, minor improvements
+
+Examples:
+- New template added: MINOR version bump (1.0.0 → 1.1.0)
+- Fixed typo in docs: PATCH version bump (1.0.0 → 1.0.1)
+- Changed Skill.md structure: MAJOR version bump (1.0.0 → 2.0.0)
+
 ## Contributing
 
 To improve this skill:

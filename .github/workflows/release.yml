@@ -1,0 +1,117 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    name: Validate Before Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate Skill
+        run: python .github/scripts/validate-skill.py skill-creator
+
+  build:
+    name: Build and Package Skill
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Releasing version: $VERSION"
+
+      - name: Update version in Skill.md
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          python .github/scripts/update-version.py skill-creator "$VERSION"
+
+      - name: Package Skill
+        run: |
+          echo "Packaging skill-creator..."
+          cd skill-creator
+          zip -r ../skill-creator-${{ steps.version.outputs.version }}.zip . \
+            -x "*.git*" -x "*__pycache__*" -x "*.pyc" -x ".DS_Store"
+          cd ..
+
+          echo "Package created: skill-creator-${{ steps.version.outputs.version }}.zip"
+          ls -lh skill-creator-${{ steps.version.outputs.version }}.zip
+
+      - name: Verify ZIP structure
+        run: |
+          echo "Verifying ZIP structure..."
+          unzip -l skill-creator-${{ steps.version.outputs.version }}.zip | head -20
+
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          python .github/scripts/generate-release-notes.py skill-creator ${{ steps.version.outputs.version }} > release-notes.md
+          cat release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Skill Creator ${{ steps.version.outputs.version }}
+          body_path: release-notes.md
+          files: |
+            skill-creator-${{ steps.version.outputs.version }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-creator-${{ steps.version.outputs.version }}
+          path: skill-creator-${{ steps.version.outputs.version }}.zip
+          retention-days: 90
+
+  announce:
+    name: Post-Release Announcement
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Release Summary
+        run: |
+          echo "🎉 Release Complete!"
+          echo "Version: ${{ needs.build.outputs.version }}"
+          echo "Tag: ${{ github.ref }}"
+          echo ""
+          echo "📦 Download the packaged skill from the release page:"
+          echo "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          echo ""
+          echo "🚀 To use this skill:"
+          echo "1. Download skill-creator-*.zip from the release"
+          echo "2. Upload to Claude via Settings > Capabilities"
+          echo "3. Enable the Skill Creator skill"
+          echo "4. Start creating custom skills!"

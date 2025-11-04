@@ -1,0 +1,107 @@
+name: Validate Skill
+
+on:
+  pull_request:
+    paths:
+      - 'skill-creator/**'
+  push:
+    branches:
+      - main
+      - 'claude/**'
+    paths:
+      - 'skill-creator/**'
+
+jobs:
+  validate:
+    name: Validate Skill Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate Skill Structure
+        run: python .github/scripts/validate-skill.py skill-creator
+
+      - name: Check file permissions
+        run: |
+          echo "Checking script permissions..."
+          if [ -d "skill-creator/scripts" ]; then
+            for script in skill-creator/scripts/*; do
+              if [ -f "$script" ]; then
+                if [ ! -x "$script" ]; then
+                  echo "Warning: $script is not executable"
+                fi
+              fi
+            done
+          fi
+
+          if [ -d "skill-creator/templates" ]; then
+            for script in skill-creator/templates/*.py skill-creator/templates/*.js; do
+              if [ -f "$script" ] 2>/dev/null; then
+                if [ ! -x "$script" ]; then
+                  echo "Warning: $script is not executable"
+                fi
+              fi
+            done
+          fi
+
+      - name: Check for secrets
+        run: |
+          echo "Scanning for potential hardcoded secrets..."
+          # Check for common secret patterns
+          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+            echo "ERROR: Found potential hardcoded API key"
+            exit 1
+          fi
+          if grep -r -i "password\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+            echo "ERROR: Found potential hardcoded password"
+            exit 1
+          fi
+          echo "No obvious secrets found"
+
+      - name: Validate Python scripts
+        run: |
+          echo "Validating Python scripts..."
+          for script in skill-creator/scripts/*.py skill-creator/templates/*.py 2>/dev/null; do
+            if [ -f "$script" ]; then
+              echo "Checking $script"
+              python -m py_compile "$script"
+            fi
+          done
+        continue-on-error: false
+
+      - name: Validate JavaScript scripts
+        if: hashFiles('skill-creator/scripts/*.js', 'skill-creator/templates/*.js') != ''
+        run: |
+          echo "Checking JavaScript syntax..."
+          for script in skill-creator/scripts/*.js skill-creator/templates/*.js 2>/dev/null; do
+            if [ -f "$script" ]; then
+              echo "Checking $script"
+              node --check "$script"
+            fi
+          done
+
+      - name: Check documentation
+        run: |
+          echo "Validating documentation files..."
+          for doc in skill-creator/README.md skill-creator/REFERENCE.md; do
+            if [ ! -f "$doc" ]; then
+              echo "Warning: $doc not found (recommended)"
+            else
+              echo "✓ Found $doc"
+            fi
+          done
+
+      - name: Validation Summary
+        run: |
+          echo "✅ All validation checks passed!"
+          echo "Skill structure is valid and ready for release."
