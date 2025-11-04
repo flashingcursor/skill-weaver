@@ -8,41 +8,44 @@ dependencies: none
 # Skill Creator
 
 ## Overview
-This Skill helps users create Agent Skills for Claude Code following official best practices. It guides through creating SKILL.md files, structuring directories, adding resources, and ensuring quality.
+This Skill helps users create Skills for both Claude Code and claude.ai following official best practices. It guides through creating SKILL.md files, structuring directories, adding resources, and ensuring quality.
 
-**What are Agent Skills?**
-Agent Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
+**What are Skills?**
+Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
 
 **Model-invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This is different from slash commands (which you explicitly type to trigger).
+
+## Platform Support
+
+This Skill Creator supports two platforms:
+
+### Claude Code (Agent Skills)
+- Filesystem-based storage (`~/.claude/skills/`, `.claude/skills/`)
+- Plugin distribution for team sharing
+- Tool restrictions via `allowed-tools` field
+- Auto-installs dependencies from PyPI/npm
+- Debug mode: `claude --debug`
+
+### claude.ai (Custom Skills)
+- Upload via Settings > Capabilities (ZIP file)
+- Manual distribution (share ZIP files)
+- No `allowed-tools` field support
+- Can install packages from PyPI/npm when needed
+- Review Skill usage in conversation thinking
+
+**Common Features** (both platforms):
+- SKILL.md with YAML frontmatter
+- Progressive disclosure (metadata → SKILL.md → additional files)
+- Same naming conventions and best practices
+- Scripts, templates, and resources support
 
 ## When to Use This Skill
 Use when:
 - User asks to create a new Skill
-- User wants to build a custom workflow for Claude Code
+- User wants to build a custom workflow for Claude
 - User needs help structuring a Skill directory
 - User asks about Skill authoring best practices
 - User wants to package, test, or share a Skill
-
-## Skill Storage Locations
-
-Skills are stored in three locations:
-
-**Personal Skills** (`~/.claude/skills/`):
-- Available across all your projects
-- For individual workflows and preferences
-- Experimental Skills you're developing
-- Personal productivity tools
-
-**Project Skills** (`.claude/skills/`):
-- Shared with your team via git
-- For team workflows and conventions
-- Project-specific expertise
-- Automatically available to team members
-
-**Plugin Skills**:
-- Bundled with Claude Code plugins
-- Automatically available when plugin installed
-- Recommended for team distribution
 
 ## Core Principles
 
@@ -68,33 +71,49 @@ Skills affect models differently. Test with Haiku, Sonnet, and Opus. What works 
 
 ## Skill Creation Process
 
-### Step 1: Gather Requirements
-Ask about:
-1. **Storage location**: Personal (~/.claude/skills/), Project (.claude/skills/), or Plugin?
+### Step 1: Determine Platform and Gather Requirements
+
+First, ask which platform(s) the user is targeting:
+- **Claude Code only**: Filesystem-based, can use allowed-tools
+- **claude.ai only**: ZIP upload, no allowed-tools
+- **Both**: Maximum compatibility, skip Claude Code-only features
+
+Then gather requirements:
+1. **Platform**: Claude Code, claude.ai, or both?
 2. **Purpose**: What specific task should this Skill solve?
 3. **Name**: What should it be called? (lowercase-with-hyphens, max 64 chars, use gerund form like "processing-pdfs")
 4. **Description**: When should Claude use it? (max 1024 chars, be specific, include triggers)
 5. **Scope**: What inputs/outputs are expected?
-6. **Tool restrictions**: Should it limit which tools Claude can use? (allowed-tools field)
-7. **Resources**: Will it need reference files, scripts, or external data?
-8. **Dependencies**: Does it require specific packages?
+6. **Tool restrictions** (Claude Code only): Should it limit which tools Claude can use? (allowed-tools field)
+7. **Storage location** (Claude Code only): Personal (~/.claude/skills/), Project (.claude/skills/), or Plugin?
+8. **Resources**: Will it need reference files, scripts, or external data?
+9. **Dependencies**: Does it require specific packages?
 
 ### Step 2: Create Directory Structure
 
-**For Personal Skills:**
+**For Claude Code:**
+
+Personal Skills:
 ```bash
 mkdir -p ~/.claude/skills/skill-name
 ```
 
-**For Project Skills:**
+Project Skills:
 ```bash
 mkdir -p .claude/skills/skill-name
 ```
 
-**Directory contents:**
+**For claude.ai:**
+
+Create a local directory (will be ZIPped later):
+```bash
+mkdir -p skill-name
+```
+
+**Directory contents (both platforms):**
 ```
 skill-name/
-├── SKILL.md           # Required: Main Skill file (note: SKILL.md not Skill.md)
+├── SKILL.md           # Required: Main Skill file
 ├── reference.md       # Optional: Supplemental information
 ├── examples.md        # Optional: Extended examples
 ├── templates/         # Optional: Template files
@@ -108,39 +127,47 @@ skill-name/
 The SKILL.md file must include:
 
 #### Required YAML Frontmatter
+
+**For both platforms:**
 ```yaml
 ---
 name: skill-name
 description: What the Skill does and when to use it. Include specific triggers and contexts. Use third person. Max 1024 characters.
 version: 1.0.0
 dependencies: package>=version, another-package>=version
-allowed-tools: Read, Grep, Glob  # Optional: restrict which tools Claude can use
 ---
 ```
 
-**Name requirements:**
+**For Claude Code only (add this field if needed):**
+```yaml
+allowed-tools: Read, Grep, Glob  # Restrict which tools Claude can use
+```
+
+**Name requirements (both platforms):**
 - Lowercase letters, numbers, and hyphens only
 - Max 64 characters
 - Use gerund form: "processing-pdfs", "analyzing-data"
 - Cannot contain "anthropic" or "claude"
 
-**Description requirements:**
+**Description requirements (both platforms):**
 - Max 1024 characters
 - Third person: "Processes files..." not "I can help..."
 - Include what it does AND when to use it
 - Mention specific triggers/keywords
 
 **Dependencies handling:**
-- Claude Code will automatically install required packages (or ask for permission)
-- List packages in dependencies field
-- Packages must be available from PyPI (Python) or npm (Node.js)
+- **Claude Code**: Auto-installs packages (or asks for permission)
+- **claude.ai**: Can install from PyPI/npm when needed
+- **Anthropic API**: No network access, pre-installed only
+- List packages: `python>=3.8, pandas>=1.5.0, requests>=2.28.0`
 
-**Tool restrictions (allowed-tools):**
+**Tool restrictions (allowed-tools) - Claude Code ONLY:**
 - Optional field to limit which tools Claude can use when Skill is active
+- **Not supported on claude.ai**
 - Useful for read-only Skills or security-sensitive workflows
 - When specified, Claude can only use listed tools without asking permission
-- If not specified, Claude follows standard permission model
 - Example tools: Read, Write, Edit, Bash, Grep, Glob, WebFetch
+- Example: `allowed-tools: Read, Grep, Glob` for read-only Skill
 
 #### Markdown Body Structure
 ```markdown
@@ -184,54 +211,109 @@ For advanced Skills that need executable code:
 
 **Note:** Claude and Claude Code can install packages from standard repositories when loading Skills.
 
-### Step 6: Share the Skill
+### Step 6: Package and Share the Skill
+
+#### For claude.ai (ZIP Upload)
+
+**Create ZIP file:**
+```bash
+# From parent directory
+zip -r skill-name.zip skill-name/
+
+# Verify structure
+unzip -l skill-name.zip
+```
+
+**Expected structure:**
+```
+skill-name.zip
+  └── skill-name/
+      ├── SKILL.md
+      ├── reference.md
+      └── scripts/
+```
+
+**Share with users:**
+1. Users navigate to Settings > Capabilities
+2. Upload the ZIP file
+3. Enable the Skill
+4. Start using it
+
+**Team distribution:**
+- Share ZIP file via email, file sharing, or git repository
+- Users manually upload to their claude.ai account
+
+#### For Claude Code
 
 **Recommended: Share via Plugin**
-The best way to share Skills with your team is through Claude Code plugins:
+Best for team distribution:
 1. Create a plugin with Skills in the `skills/` directory
 2. Publish to a marketplace
 3. Team members install the plugin
 4. Skills automatically available
 
 **Alternative: Share via Git (Project Skills)**
+For project-specific Skills:
 1. Place Skill in `.claude/skills/skill-name/`
 2. Commit to git: `git add .claude/skills/ && git commit -m "Add skill"`
-3. Team members get Skills automatically when they pull: `git pull`
+3. Team members get Skills automatically: `git pull`
 
 **Personal Skills:**
-- Stay local to your machine
+- Stay local: `~/.claude/skills/`
 - Not shared automatically
 - Use for individual workflows
 
+#### For Both Platforms
+
+If targeting both, provide:
+1. ZIP file for claude.ai users
+2. Plugin or git instructions for Claude Code users
+3. Omit Claude Code-only features (like `allowed-tools`)
+
 ### Step 7: Test the Skill
+
+#### Testing on Both Platforms
 
 **Test with matching requests:**
 Skills are autonomously invoked—Claude decides when to use them based on the description.
 
 Ask questions that match your description:
-```bash
+```
 # If description mentions "PDF files"
 "Can you help me extract text from this PDF?"
 
 # Claude automatically uses your Skill if it matches
 ```
 
-**Verify Skill discovery:**
-```bash
-# View all available Skills
-"What Skills are available?"
+**Verify Skill is loaded:**
+Ask Claude: `"What Skills are available?"`
 
-# List Skills from all sources
-ls ~/.claude/skills/      # Personal
-ls .claude/skills/        # Project (if in project)
-```
+#### Platform-Specific Testing
 
-**Debug if Skill doesn't activate:**
+**For claude.ai:**
+1. **Upload Skill**: Settings > Capabilities > Upload ZIP
+2. **Enable Skill**: Toggle it on in Capabilities
+3. **Test invocation**: Ask relevant questions
+4. **Review thinking**: Check if Skill was considered and why/why not
+5. **Iterate description**: Update if Skill not triggering correctly
+
+**For Claude Code:**
+1. **Verify file location**:
+   ```bash
+   ls ~/.claude/skills/skill-name/SKILL.md  # Personal
+   ls .claude/skills/skill-name/SKILL.md   # Project
+   ```
+2. **Restart Claude Code**: Required for changes to take effect
+3. **Test invocation**: Ask relevant questions
+4. **Debug if needed**: Run `claude --debug` to see loading errors
+5. **Check YAML syntax**: Validate frontmatter format
+
+**Common Debugging Steps:**
 1. **Check description specificity**: Too vague? Add specific triggers
-2. **Verify file path**: Personal (~/.claude/skills/) or Project (.claude/skills/)
-3. **Check YAML syntax**: Validate frontmatter format
-4. **Run debug mode**: `claude --debug` to see loading errors
-5. **Restart Claude Code**: Changes require restart to take effect
+2. **Verify YAML syntax**: Must start/end with `---`, no tabs
+3. **Test with exact keywords**: Use terms from your description
+4. **Review Skill name**: Must be lowercase-with-hyphens
+5. **Check dependencies**: Listed correctly in frontmatter?
 
 ## Best Practices
 

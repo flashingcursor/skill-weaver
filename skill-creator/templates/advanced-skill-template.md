@@ -3,16 +3,19 @@ name: your-advanced-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates statistical reports with visualizations. Use when analyzing data, creating reports, working with spreadsheets, or when user mentions CSV, data analysis, statistics, or reports."
 version: 1.0.0
 dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
-# Optional: Restrict which tools Claude can use when this Skill is active
+# Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - remove for claude.ai)
 # allowed-tools: Read, Bash  # For data analysis without file modifications
 ---
 
+# IMPORTANT: Works on both Claude Code and claude.ai
 # IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
 # IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
 # IMPORTANT: File must be named SKILL.md (uppercase SKILL)
 # IMPORTANT: SKILL.md body should stay under 500 lines - move details to reference.md
-# IMPORTANT: Place in ~/.claude/skills/your-skill-name/ (personal) or .claude/skills/your-skill-name/ (project)
-# IMPORTANT: Dependencies auto-installed by Claude Code when Skill is first used
+# IMPORTANT: For Claude Code: Place in ~/.claude/skills/ (personal) or .claude/skills/ (project)
+# IMPORTANT: For claude.ai: Create directory, then ZIP for upload via Settings > Capabilities
+# IMPORTANT: Dependencies: Auto-install (Claude Code) or install when needed (claude.ai)
+# IMPORTANT: Remove allowed-tools field if targeting claude.ai
 
 # Your Advanced Skill Name
 
@@ -205,14 +208,13 @@ Edge case scenario
 
 Before publishing this Skill:
 
-### Core Quality
+### Core Quality (Both Platforms)
 - [ ] Name uses lowercase-with-hyphens (max 64 chars)
 - [ ] Name uses gerund form (processing-pdfs, analyzing-data)
 - [ ] Description includes what it does AND when to use it (max 1024 chars)
 - [ ] Description written in third person
 - [ ] Description includes specific trigger keywords
 - [ ] File named SKILL.md (uppercase SKILL)
-- [ ] Placed in correct location (~/.claude/skills/ or .claude/skills/)
 - [ ] SKILL.md body under 500 lines
 - [ ] Detailed content moved to reference.md
 - [ ] Examples are concrete, not abstract
@@ -220,7 +222,13 @@ Before publishing this Skill:
 - [ ] File references are one level deep
 - [ ] No Windows-style paths (use forward slashes)
 - [ ] No time-sensitive information
-- [ ] allowed-tools specified if tool restriction needed
+
+### Platform-Specific
+- [ ] **If Claude Code only**: Placed in ~/.claude/skills/ or .claude/skills/
+- [ ] **If Claude Code only**: allowed-tools specified if restriction needed
+- [ ] **If claude.ai only**: Removed allowed-tools field
+- [ ] **If claude.ai**: Created ZIP with correct structure (skill-name/SKILL.md)
+- [ ] **If both platforms**: Omitted Claude Code-only features
 
 ### Code and Scripts
 - [ ] Scripts solve problems rather than punt to Claude
@@ -237,9 +245,12 @@ Before publishing this Skill:
 - [ ] Description accurately triggers Skill (autonomous invocation works)
 - [ ] Tested with queries matching description keywords
 - [ ] Verified Skill appears in `"What Skills are available?"` query
-- [ ] Tested after restarting Claude Code
 - [ ] Verified dependencies install correctly
-- [ ] Tested allowed-tools restrictions (if specified)
+- [ ] **If Claude Code**: Tested after restarting Claude Code
+- [ ] **If Claude Code**: Tested allowed-tools restrictions (if specified)
+- [ ] **If Claude Code**: Verified in correct directory (~/.claude/skills/ or .claude/skills/)
+- [ ] **If claude.ai**: Uploaded ZIP and enabled in Settings > Capabilities
+- [ ] **If claude.ai**: Verified ZIP structure is correct
 
 ## Version History
 - **1.0.0**: Initial release with [features]

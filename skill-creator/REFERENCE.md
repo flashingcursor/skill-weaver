@@ -1,11 +1,52 @@
-# Skill Creator - Technical Reference for Claude Code Agent Skills
+# Skill Creator - Technical Reference
 
-This document provides detailed technical information for creating Claude Code Agent Skills. It's referenced from SKILL.md but contains supplemental details that aren't needed for every skill creation task.
+This document provides detailed technical information for creating Skills for both Claude Code and claude.ai. It's referenced from SKILL.md but contains supplemental details that aren't needed for every skill creation task.
 
-## Agent Skills Architecture
+## Platform Comparison
 
-**What are Agent Skills?**
-Agent Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
+### Overview
+
+Skills work on two platforms: **Claude Code** (desktop agent) and **claude.ai** (web application). Most features are common, but some are platform-specific.
+
+### Feature Comparison Matrix
+
+| Feature | Claude Code | claude.ai | Notes |
+|---------|-------------|-----------|-------|
+| **SKILL.md format** | ✅ Yes | ✅ Yes | Identical format |
+| **YAML frontmatter** | ✅ Yes | ✅ Yes | Same fields |
+| **Progressive disclosure** | ✅ Yes | ✅ Yes | Same behavior |
+| **Scripts (Python/JS)** | ✅ Yes | ✅ Yes | Both support |
+| **Dependencies** | Auto-install | Install when needed | Both use PyPI/npm |
+| **Storage** | Filesystem | ZIP upload | Different methods |
+| **Distribution** | Plugin/git | Manual ZIP | Different methods |
+| **allowed-tools** | ✅ Yes | ❌ No | Claude Code only |
+| **Debug mode** | `claude --debug` | Review thinking | Different approaches |
+| **Skill updates** | Restart required | Re-upload ZIP | Different processes |
+
+### When to Use Each Platform
+
+**Claude Code is best for:**
+- Team collaboration via git (Project Skills)
+- Plugin distribution
+- Tool restrictions needed (allowed-tools)
+- Local development workflows
+- Frequent Skill iteration
+
+**claude.ai is best for:**
+- Individual users
+- Quick Skill distribution (share ZIP)
+- No installation required
+- Cross-platform access (any browser)
+
+**Both platforms if:**
+- Maximum compatibility desired
+- Targeting diverse user base
+- Skip Claude Code-only features (allowed-tools)
+
+## Skills Architecture (Common to Both Platforms)
+
+**What are Skills?**
+Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
 
 **Model-Invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This differs from slash commands (user-invoked).
 
@@ -16,27 +57,58 @@ Agent Skills package expertise into discoverable capabilities. Each Skill consis
 2. SKILL.md body (when Skill used): core instructions
 3. Additional files (as needed): reference docs, templates, scripts
 
-## Storage Locations
+## Storage and Distribution
 
-Skills can be stored in three locations:
+### Claude Code Storage Locations
 
-### Personal Skills (`~/.claude/skills/`)
+Skills in Claude Code can be stored in three locations:
+
+#### Personal Skills (`~/.claude/skills/`)
 - Available across all your projects
 - For individual workflows and preferences
 - Experimental Skills you're developing
 - Not shared with team members
 
-### Project Skills (`.claude/skills/`)
+#### Project Skills (`.claude/skills/`)
 - Shared with your team via git
 - For team workflows and conventions
 - Automatically available to team members
 - Checked into version control
 
-### Plugin Skills
+#### Plugin Skills
 - Bundled with Claude Code plugins
 - Automatically available when plugin installed
 - Recommended for team distribution
 - Managed through plugin system
+
+### claude.ai Distribution
+
+Skills for claude.ai are distributed as ZIP files:
+
+**Creation:**
+```bash
+zip -r skill-name.zip skill-name/
+```
+
+**Expected structure:**
+```
+skill-name.zip
+  └── skill-name/
+      ├── SKILL.md
+      ├── reference.md
+      └── scripts/
+```
+
+**Upload process:**
+1. Navigate to Settings > Capabilities
+2. Upload ZIP file
+3. Enable the Skill
+4. Start using it
+
+**Team sharing:**
+- Share ZIP via email, file sharing, or git repository
+- Each user manually uploads to their account
+- No automatic updates (re-upload for changes)
 
 ## YAML Frontmatter Specification
 
