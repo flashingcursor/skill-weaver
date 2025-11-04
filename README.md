@@ -1,4 +1,4 @@
-# Skill4Skills
+# Skill Weaver
 
 A meta-skill repository for creating Custom Skills for Claude.
 
@@ -23,8 +23,8 @@ This repository contains **Skill Creator**, a Custom Skill that helps you build 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/skill4skills.git
-cd skill4skills
+git clone https://github.com/yourusername/skill-weaver.git
+cd skill-weaver
 
 # Validate the skill
 python .github/scripts/validate-skill.py skill-creator
@@ -46,7 +46,7 @@ python .github/scripts/validate-skill.py skill-creator
 ## Repository Structure
 
 ```
-skill4skills/
+skill-weaver/
 ├── .github/
 │   ├── workflows/
 │   │   ├── validate.yml          # Validation workflow
