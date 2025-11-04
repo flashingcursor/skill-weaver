@@ -23,7 +23,7 @@ This repository contains **Skill Creator**, a Custom Skill that helps you build 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/skill-weaver.git
+git clone https://github.com/flashingcursor/skill-weaver.git
 cd skill-weaver
 
 # Validate the skill
