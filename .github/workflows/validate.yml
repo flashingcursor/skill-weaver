@@ -47,7 +47,7 @@ jobs:
 
           if [ -d "skill-creator/templates" ]; then
             for script in skill-creator/templates/*.py skill-creator/templates/*.js; do
-              if [ -f "$script" ] 2>/dev/null; then
+              if [ -f "$script" ]; then
                 if [ ! -x "$script" ]; then
                   echo "Warning: $script is not executable"
                 fi
@@ -72,7 +72,7 @@ jobs:
       - name: Validate Python scripts
         run: |
           echo "Validating Python scripts..."
-          for script in skill-creator/scripts/*.py skill-creator/templates/*.py 2>/dev/null; do
+          for script in skill-creator/scripts/*.py skill-creator/templates/*.py; do
             if [ -f "$script" ]; then
               echo "Checking $script"
               python -m py_compile "$script"
@@ -84,7 +84,7 @@ jobs:
         if: hashFiles('skill-creator/scripts/*.js', 'skill-creator/templates/*.js') != ''
         run: |
           echo "Checking JavaScript syntax..."
-          for script in skill-creator/scripts/*.js skill-creator/templates/*.js 2>/dev/null; do
+          for script in skill-creator/scripts/*.js skill-creator/templates/*.js; do
             if [ -f "$script" ]; then
               echo "Checking $script"
               node --check "$script"
