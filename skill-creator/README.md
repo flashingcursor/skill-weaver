@@ -192,6 +192,7 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.1.0-alpha.2**: Fixed frontmatter structure for claude.ai compatibility, updated documentation
 - **0.1.0-alpha.1**: Initial alpha release of Skill Creator
 
 ## Resources
