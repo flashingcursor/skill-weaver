@@ -43,7 +43,10 @@ jobs:
               parts = content.split('---', 2)
               if len(parts) >= 3:
                   frontmatter = yaml.safe_load(parts[1])
-                  print(frontmatter.get('version', ''))
+                  # Extract version from metadata field (claude.ai format)
+                  metadata = frontmatter.get('metadata', {})
+                  version = metadata.get('version', '') if isinstance(metadata, dict) else ''
+                  print(version)
           ")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Current version in Skill.md: $VERSION"
