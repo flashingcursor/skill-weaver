@@ -1,8 +1,9 @@
 ---
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
-version: 0.1.0-alpha.1
-dependencies: none
+metadata:
+  version: 0.1.0-alpha.1
+  dependencies: none
 ---
 
 # Skill Creator
@@ -133,8 +134,9 @@ The SKILL.md file must include:
 ---
 name: skill-name
 description: What the Skill does and when to use it. Include specific triggers and contexts. Use third person. Max 1024 characters.
-version: 1.0.0
-dependencies: package>=version, another-package>=version
+metadata:
+  version: 1.0.0
+  dependencies: package>=version, another-package>=version
 ---
 ```
 
@@ -142,6 +144,8 @@ dependencies: package>=version, another-package>=version
 ```yaml
 allowed-tools: Read, Grep, Glob  # Restrict which tools Claude can use
 ```
+
+**Note:** claude.ai only accepts these frontmatter keys: `name`, `description`, `license`, `allowed-tools`, `metadata`. Version and dependencies must be nested under `metadata`.
 
 **Name requirements (both platforms):**
 - Lowercase letters, numbers, and hyphens only
@@ -454,7 +458,8 @@ pdf-processing/
 ---
 name: pdf-processing
 description: Extract text, fill forms, merge PDFs. Use when working with PDF files, forms, or document extraction.
-dependencies: pypdf>=3.0.0, pdfplumber>=0.9.0
+metadata:
+  dependencies: pypdf>=3.0.0, pdfplumber>=0.9.0
 ---
 
 # PDF Processing

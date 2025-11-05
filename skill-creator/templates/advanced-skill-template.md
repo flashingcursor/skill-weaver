@@ -1,8 +1,9 @@
 ---
 name: your-advanced-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates statistical reports with visualizations. Use when analyzing data, creating reports, working with spreadsheets, or when user mentions CSV, data analysis, statistics, or reports."
-version: 1.0.0
-dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
+metadata:
+  version: 1.0.0
+  dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
 # Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - remove for claude.ai)
 # allowed-tools: Read, Bash  # For data analysis without file modifications
 ---
