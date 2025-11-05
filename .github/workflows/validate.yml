@@ -59,11 +59,11 @@ jobs:
         run: |
           echo "Scanning for potential hardcoded secrets..."
           # Check for common secret patterns
-          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" skill-creator/; then
             echo "ERROR: Found potential hardcoded API key"
             exit 1
           fi
-          if grep -r -i "password\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+          if grep -r -i "password\s*=\s*['\"][^'\"]\+" skill-creator/; then
             echo "ERROR: Found potential hardcoded password"
             exit 1
           fi
