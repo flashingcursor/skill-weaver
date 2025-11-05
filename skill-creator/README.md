@@ -192,7 +192,7 @@ When creating skills with scripts:
 
 ## Version History
 
-- **1.0.0**: Initial release of Skill Creator
+- **0.1.0-alpha.1**: Initial alpha release of Skill Creator
 
 ## Resources
 
