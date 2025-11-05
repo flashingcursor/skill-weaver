@@ -145,15 +145,30 @@ skill-name.zip
 
 ### Optional Fields
 
+**Important:** For claude.ai, `version` and `dependencies` must be nested under the `metadata` field. Claude Code accepts both formats.
+
+#### metadata
+- **Type**: Object (for claude.ai) or optional wrapper (for Claude Code)
+- **Purpose**: Contains version and dependencies information
+- **Required for claude.ai**: Yes, if you need version/dependencies tracking
+- **Format**:
+  ```yaml
+  metadata:
+    version: 1.0.0
+    dependencies: package>=version
+  ```
+
 #### version
 - **Type**: String
 - **Format**: Semantic versioning (MAJOR.MINOR.PATCH)
 - **Example**: "1.0.0", "2.1.3"
+- **Location**: Must be under `metadata` for claude.ai
 - **Recommendation**: Always include for tracking changes
 
 #### dependencies
 - **Type**: String (comma-separated list)
 - **Format**: `package>=version, another-package>=version`
+- **Location**: Must be under `metadata` for claude.ai
 - **Examples**:
   - Python: `python>=3.8, pandas>=1.5.0, numpy>=1.21.0`
   - JavaScript: `node>=16.0.0, axios>=1.0.0`

@@ -108,18 +108,29 @@ class SkillValidator:
                     print(f"✓ Description: '{description[:60]}...'")
 
             # Validate optional fields
-            if 'version' in frontmatter:
-                version = frontmatter['version']
+            # Support both formats: top-level and nested under metadata
+            version = None
+            dependencies = None
+
+            if 'metadata' in frontmatter and isinstance(frontmatter['metadata'], dict):
+                # New format: nested under metadata (required for claude.ai)
+                version = frontmatter['metadata'].get('version')
+                dependencies = frontmatter['metadata'].get('dependencies')
+            else:
+                # Old format: top-level (still supported for Claude Code)
+                version = frontmatter.get('version')
+                dependencies = frontmatter.get('dependencies')
+
+            if version:
                 # Check for semantic versioning format
                 if not re.match(r'^\d+\.\d+\.\d+', str(version)):
                     self.warnings.append(f"Version '{version}' doesn't follow semantic versioning (X.Y.Z)")
                 else:
                     print(f"✓ Version: {version}")
 
-            if 'dependencies' in frontmatter:
-                deps = frontmatter['dependencies']
-                if deps and deps != 'none':
-                    print(f"✓ Dependencies: {deps}")
+            if dependencies:
+                if dependencies != 'none':
+                    print(f"✓ Dependencies: {dependencies}")
 
             print("✓ Frontmatter validation passed")
             return True

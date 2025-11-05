@@ -1,7 +1,8 @@
 ---
 name: your-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates reports. Use when analyzing data, working with spreadsheets, or when user mentions CSV, data analysis, or reports."
-version: 1.0.0
+metadata:
+  version: 1.0.0
 # Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - remove for claude.ai)
 # allowed-tools: Read, Grep, Glob  # For read-only Skills
 ---
