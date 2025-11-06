@@ -886,6 +886,479 @@ For files longer than 100 lines, include table of contents at the top:
 ...
 ```
 
+## Engagement Detection Patterns
+
+When creating Skills using the adaptive workflow, accurately detecting user engagement level is critical for providing the right experience. This section provides detailed patterns for recognizing and responding to engagement signals.
+
+### Understanding Engagement Levels
+
+**Low Engagement** indicates the user trusts your judgment and wants quick results without detailed collaboration. They're busy, know what they want, and prefer efficiency over involvement.
+
+**Medium Engagement** indicates the user has specific requirements but doesn't want extensive back-and-forth. They know what adjustments they need and want you to implement them efficiently.
+
+**High Engagement** indicates the user wants to understand, influence, or learn from the process. They value collaboration and want to explore options together.
+
+### Language Pattern Recognition
+
+#### Low Engagement Patterns
+
+**Approval signals:**
+- "looks good"
+- "ship it"
+- "that works"
+- "perfect"
+- "great, thanks"
+- "let's go with that"
+- "👍" or other positive emoji-only responses
+- "yep"
+- "sounds right"
+- Single-word approvals: "yes", "ok", "good", "fine"
+
+**Urgency signals:**
+- "just do it"
+- "go ahead"
+- "let's move forward"
+- "ready when you are"
+- "package it up"
+
+**Trust signals:**
+- "I trust your judgment"
+- "you know best"
+- "whatever you think"
+- "your call"
+
+**Response strategy for low engagement:**
+```
+User: "looks good"
+
+Your response:
+✓ Package immediately
+✓ Provide installation instructions
+✓ Offer brief usage examples
+✗ Don't ask follow-up questions
+✗ Don't suggest additional features
+✗ Don't request more feedback
+```
+
+#### Medium Engagement Patterns
+
+**Specific change requests:**
+- "can you add X?"
+- "change the description to..."
+- "make it Y instead"
+- "tweak the Z section"
+- "update the name to..."
+- "add error handling for..."
+
+**Focused feedback:**
+- "the description seems too vague"
+- "I'd prefer X over Y"
+- "let's use Z instead"
+- "can we target both platforms?"
+- "add a template for..."
+
+**Bounded questions:**
+- "what format should I use?" (answerable directly)
+- "where does this file go?" (straightforward answer)
+- "should this be in REFERENCE.md?" (yes/no decision)
+
+**Response strategy for medium engagement:**
+```
+User: "Can you add type hint checking to the review checklist?"
+
+Your response:
+1. Make the specific change requested
+2. Present updated section briefly
+3. Ask one checkpoint question: "Ready to package, or any other changes?"
+4. If approved → package immediately
+5. If more changes → repeat cycle
+6. After 2-3 iterations → offer to package or continue
+
+✓ Make changes efficiently
+✓ Show what changed
+✓ Ask if ready or need more
+✗ Don't expand scope unprompted
+✗ Don't dive into deep explanations
+✗ Don't suggest major restructuring
+```
+
+#### High Engagement Patterns
+
+**Open-ended questions:**
+- "how does X work?"
+- "what are the tradeoffs between Y and Z?"
+- "should we handle this scenario?"
+- "what about edge case A?"
+- "is there a better way to..."
+
+**Uncertainty signals:**
+- "hmm, not sure about..."
+- "I'm wondering if..."
+- "would it be better to..."
+- "what do you think about..."
+- "I'm concerned that..."
+
+**Exploratory language:**
+- "let's think about..."
+- "what if we..."
+- "could we also..."
+- "have you considered..."
+- "alternatively..."
+
+**Learning interest:**
+- "why did you choose X?"
+- "can you explain Y?"
+- "help me understand Z"
+- "what's the reasoning behind..."
+- "how does this compare to..."
+
+**Multiple questions in one message:**
+- Signals desire for detailed discussion
+- Shows investment in understanding
+- Indicates collaborative preference
+
+**Response strategy for high engagement:**
+```
+User: "Should we include async code patterns? What about testing coverage? I'm also wondering if we need separate skills for different Python versions."
+
+Your response:
+1. Switch to collaborative checkpoint mode
+2. Address questions with options and tradeoffs
+3. Ask for input on priorities
+4. Break remaining work into smaller decisions
+5. Explain reasoning for recommendations
+6. Invite continued discussion
+
+✓ Explain options thoroughly
+✓ Present tradeoffs clearly
+✓ Ask for preferences before proceeding
+✓ Offer to explore alternatives
+✓ Provide context and reasoning
+✗ Don't make big decisions unilaterally
+✗ Don't rush to completion
+✗ Don't limit discussion
+```
+
+### Detecting Mixed Signals
+
+Sometimes user feedback contains conflicting signals. Use these strategies:
+
+#### Approval + New Request Pattern
+```
+User: "Looks great! Can you also add validation for email fields?"
+```
+
+**Analysis:**
+- "Looks great" = low engagement signal
+- "Can you also..." = medium engagement signal (specific request)
+
+**Classification:** Medium engagement
+**Response:** Treat as medium engagement—make the change, then ask if ready to package.
+
+#### Approval + Question Pattern
+```
+User: "This works well. How does the progressive disclosure actually work in practice?"
+```
+
+**Analysis:**
+- "This works well" = low engagement signal
+- "How does..." = high engagement signal (learning interest)
+
+**Classification:** High engagement (learning interest overrides approval)
+**Response:** Provide detailed explanation, ask if they want to explore further, then return to packaging.
+
+#### Minimal Text + Multiple Small Requests
+```
+User: "change name, add python 3.11, fix typo in line 23"
+```
+
+**Analysis:**
+- Brief communication = appears low engagement
+- Multiple specific items = actually medium engagement
+
+**Classification:** Medium engagement
+**Response:** Make all changes efficiently, present results, ask if ready or need more.
+
+#### Enthusiastic Approval + Future Ideas
+```
+User: "Perfect! This will be so useful. Eventually we should probably add support for async patterns too."
+```
+
+**Analysis:**
+- "Perfect" = low engagement signal for current work
+- "Eventually we should..." = future feature, not immediate request
+
+**Classification:** Low engagement (package now)
+**Response:** Package the current Skill, mention that async support could be a future enhancement.
+
+### Transition Strategies
+
+#### From Low to Medium Engagement
+Rarely happens, but if user returns with specific feedback after approval:
+
+```
+User: "looks good" → [you start packaging]
+User: "Actually, can you change the description?"
+
+Response: Stop packaging, make the change, revert to medium engagement mode.
+```
+
+#### From Medium to High Engagement
+Watch for questions that indicate deeper interest:
+
+```
+User: "change description to X" → [you make change]
+You: "Updated. Ready to package, or any other changes?"
+User: "Why did you structure it with REFERENCE.md instead of putting everything in SKILL.md?"
+
+Response: User is asking "why" questions—shift to high engagement mode, explain reasoning.
+```
+
+#### From High to Medium Engagement
+User starts giving directives instead of asking questions:
+
+```
+User: [multiple open-ended questions, discussing options]
+You: [collaborative responses]
+User: "OK, let's go with option B and add the validation script."
+
+Response: User has made decision—shift to medium engagement, implement efficiently.
+```
+
+#### From High to Low Engagement
+User signals they're satisfied and ready to finish:
+
+```
+User: [detailed discussion]
+You: [collaborative responses]
+User: "Great explanation, that makes sense. Let's finalize it."
+
+Response: User is ready to finish—shift to low engagement, package immediately.
+```
+
+### Real Conversation Examples
+
+#### Example 1: Clear Low Engagement
+```
+AI: "I've created a code-reviewer Skill for both platforms. Here's what I built:
+
+Key Decisions:
+- Platform: Both (maximum flexibility)
+- Scope: Python best practices, security, style
+- Description: Triggers on 'Python', 'code review', 'PR'
+
+What would you like to adjust?"
+
+User: "looks good"
+
+AI: [Immediately packages and provides installation instructions]
+✓ Correct: Recognized low engagement, moved to completion
+```
+
+#### Example 2: Clear Medium Engagement
+```
+AI: "I've created a data-analyzer Skill. [details]
+What would you like to adjust?"
+
+User: "Can you add support for Excel files in addition to CSV?"
+
+AI: [Makes the change]
+"Updated to support both CSV and Excel formats via pandas.read_excel(). Ready to package, or any other changes?"
+
+User: "That's it, package it up"
+
+AI: [Packages immediately]
+✓ Correct: Recognized medium engagement, made change efficiently, moved to completion
+```
+
+#### Example 3: Clear High Engagement
+```
+AI: "I've created a report-generator Skill. [details]
+What would you like to adjust?"
+
+User: "How does this handle different report formats? Should we support both PDF and HTML, or is that too broad for one Skill? I'm also wondering about templating—would it be better to use Jinja2 or just string formatting?"
+
+AI: "Great questions! Let's think through these:
+
+**Report Formats:**
+- Single Skill with both: Better for simple reports, users get flexibility
+- Separate Skills: Better if formats need very different handling
+- Your use case: If reports are similar structure, I'd recommend single Skill with format parameter
+
+**Templating:**
+- Jinja2: More powerful, better for complex layouts, requires dependency
+- String formatting: Simpler, no dependencies, good for straightforward reports
+- Your use case: How complex are your report templates?
+
+What's most important for your workflow?"
+
+User: "Our reports are pretty straightforward, mostly tables and summaries."
+
+AI: "Then I'd recommend:
+- Single Skill supporting both PDF and HTML
+- String formatting (keeps it simple)
+- Add Jinja2 support later if needed
+
+Should I proceed with this approach?"
+
+✓ Correct: Recognized high engagement, provided options/tradeoffs, sought input before proceeding
+```
+
+#### Example 4: Mixed Signal Resolution
+```
+AI: "I've created a csv-validator Skill. [details]
+What would you like to adjust?"
+
+User: "Looks good. What happens if the CSV has encoding issues?"
+
+AI: [Recognizes: approval (low) + technical question (medium/high)]
+[Interprets as: satisfied with current state, but wants to understand edge case]
+
+"Glad you like it! For encoding issues, the Skill currently uses UTF-8 with error handling that:
+1. Tries UTF-8 first
+2. Falls back to latin-1 if that fails
+3. Reports encoding used in validation output
+
+This covers most cases. Would you like me to add explicit encoding detection (using chardet library), or is the current fallback approach sufficient for your needs?"
+
+User: "Current approach is fine, let's go with it."
+
+AI: [Packages immediately]
+✓ Correct: Answered question but detected user was ready to proceed, didn't force more discussion
+```
+
+### Common Pitfalls to Avoid
+
+#### Pitfall 1: Over-Collaborating with Low Engagement Users
+```
+❌ Bad:
+User: "looks good"
+AI: "Great! Should we add X? What about Y? Have you considered Z?"
+
+✓ Good:
+User: "looks good"
+AI: [Packages immediately with installation instructions]
+```
+
+#### Pitfall 2: Under-Collaborating with High Engagement Users
+```
+❌ Bad:
+User: "How does this work? What are the tradeoffs? Should we...?"
+AI: "I'll make that change. Ready to package?"
+
+✓ Good:
+User: "How does this work? What are the tradeoffs? Should we...?"
+AI: [Detailed explanation, options, invites continued discussion]
+```
+
+#### Pitfall 3: Misreading Brevity as Low Engagement
+```
+User: "add async support"
+
+❌ Bad interpretation: Low engagement, they're terse
+✓ Good interpretation: Medium engagement, specific request
+
+Response: Make the change, show results, ask if ready or need more
+```
+
+#### Pitfall 4: Treating Questions as Blocking Issues
+```
+User: "what does progressive disclosure mean?"
+
+❌ Bad: Assume they need extensive education before proceeding
+✓ Good: Brief explanation, then: "The Skill uses this already. Want to proceed with packaging or discuss further?"
+```
+
+#### Pitfall 5: Forcing a Mode Change Too Early
+```
+User: [asks one question]
+
+❌ Bad: "I'm switching to collaborative checkpoint mode..."
+✓ Good: Answer the question, see if more questions follow before changing approach
+```
+
+### Engagement Detection Checklist
+
+When analyzing user feedback, ask:
+
+**Volume indicators:**
+- [ ] Is the response short (< 10 words)?
+- [ ] Is it a single sentence or multiple paragraphs?
+- [ ] Does it contain multiple questions?
+
+**Content indicators:**
+- [ ] Pure approval words? → Low
+- [ ] Specific change requests? → Medium
+- [ ] Open-ended questions? → High
+- [ ] "Why/How" questions? → High
+- [ ] "Should we" questions? → High
+
+**Tone indicators:**
+- [ ] Decisive and directive? → Medium/Low
+- [ ] Exploratory and uncertain? → High
+- [ ] Trusting and delegating? → Low
+
+**Context indicators:**
+- [ ] First piece of feedback after review? → Be conservative, default to medium
+- [ ] Follow-up after changes? → Maintain current level or adjust based on new signals
+- [ ] Late in conversation? → More likely to shift toward low (fatigue/satisfaction)
+
+### Adaptive Response Templates
+
+**For Low Engagement:**
+```markdown
+Template:
+[Package immediately]
+✓ All set! Here's your Skill package: [filename]
+
+**Installation:**
+[Brief instructions for their platform]
+
+**Quick test:**
+Try: "[example prompt that triggers the Skill]"
+```
+
+**For Medium Engagement:**
+```markdown
+Template:
+✓ Updated [specific change made]
+
+[Brief before/after if helpful]
+
+Ready to package, or any other changes?
+```
+
+**For High Engagement:**
+```markdown
+Template:
+Great questions! Let's explore these:
+
+**[First topic]:**
+- Option A: [brief description, tradeoff]
+- Option B: [brief description, tradeoff]
+- Recommendation: [with reasoning]
+
+**[Second topic]:**
+- [similar structure]
+
+What's most important for your use case? [or] Should I proceed with [recommended approach]?
+```
+
+### Summary: Quick Reference
+
+| Signal Type | Engagement Level | Response Action |
+|-------------|-----------------|-----------------|
+| "looks good", "ship it", 👍 | Low | Package immediately |
+| "add X", "change Y to Z" | Medium | Make change → ask if ready |
+| "why/how...", "should we...", "what about..." | High | Explain options → seek input |
+| Approval + question | High | Answer → offer more discussion |
+| Approval + small request | Medium | Make change → ask if ready |
+| Multiple questions | High | Collaborative mode |
+| Brief directives | Medium | Efficient implementation |
+| Single question | Answer → wait for follow-up before mode shift |
+
+**Golden Rule:** When unsure, default to medium engagement and adjust based on the next response.
+
 ## Advanced: Skills with Executable Code
 
 ### Solve, Don't Punt
