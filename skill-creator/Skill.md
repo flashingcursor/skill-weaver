@@ -147,22 +147,196 @@ When presenting the Skill in Phase 2, explain your key choices:
 
 ### Workflow Variants
 
-You can adapt this workflow based on explicit user preferences:
+Users can explicitly request different interaction styles. Recognize these requests and adapt accordingly.
 
-**Quick Create Mode** (user says "just make it" or similar):
-- Skip to autonomous create
-- Minimal review (just show what was created)
-- Package immediately unless user stops you
+#### Quick Create Mode
 
-**Guided Create Mode** (user says "walk me through it" or similar):
-- Start with high engagement from the beginning
-- Ask clarifying questions upfront
-- Present options at each major decision
-- Collaborative throughout
+**Purpose:** Fast, autonomous Skill creation with minimal interaction.
 
-**Default Mode** (no explicit preference):
-- Use the three-phase model above
-- Let engagement level emerge from user's feedback
+**When users request this:**
+- "just make it"
+- "create quickly"
+- "I trust your judgment, just build it"
+- "make a basic version fast"
+- "no need to ask me questions, just do it"
+
+**Workflow:**
+1. Ask minimal clarifying questions (only platform and basic purpose)
+2. Create skill autonomously with progress indicators
+3. Show brief summary of what was created
+4. Package immediately
+5. Provide installation instructions
+
+**What to skip:**
+- Lengthy review with decision explanations
+- Asking "what would you like to adjust?"
+- Waiting for feedback before packaging
+- Suggesting additional features
+
+**Example interaction:**
+```
+User: "Just create a skill for code reviews quickly"
+
+AI: "Creating code-review skill for both platforms...
+
+Creating Skill structure... ✓
+Writing description and instructions... ✓
+Adding review checklist... ✓
+Packaging... ✓
+
+✓ All set! Here's your code-reviewer.zip
+
+**Installation:**
+[Brief platform-specific instructions]
+
+**Quick test:**
+Try: 'Review this Python file for best practices'"
+```
+
+#### Guided Create Mode
+
+**Purpose:** Collaborative, educational Skill creation with user involved at each step.
+
+**When users request this:**
+- "walk me through it"
+- "let's build this together"
+- "I want to understand the process"
+- "help me learn how to create this"
+- "let's do this step by step"
+- "can you explain as we go?"
+
+**Workflow:**
+1. Start with comprehensive requirements gathering
+2. Present options for major decisions (platform, structure, scope)
+3. Explain tradeoffs and implications
+4. Get user input before proceeding with each section
+5. Show work in progress at checkpoints
+6. Explain choices as you make them
+7. Invite questions throughout
+
+**What to include:**
+- Detailed explanations of decisions
+- Options and tradeoffs
+- Educational context about Skills
+- Frequent checkpoints for feedback
+- Encouragement to ask questions
+
+**Example interaction:**
+```
+User: "Walk me through creating a skill for data analysis"
+
+AI: "I'd be happy to guide you through creating a data-analysis skill! Let's start by making some key decisions together.
+
+**Platform Choice:**
+We need to decide where this skill will run:
+- **Claude Code only**: Can use tool restrictions, distribute via plugin
+- **claude.ai only**: ZIP upload, simpler for individuals
+- **Both platforms**: Maximum compatibility, skip platform-specific features
+
+Which environment are you targeting?"
+
+User: "Both platforms"
+
+AI: "Great choice for maximum flexibility! Since we're targeting both platforms, we'll use the metadata field format and skip the allowed-tools field.
+
+**Skill Scope:**
+For data analysis, we could focus on:
+- **Option A**: General CSV/Excel analysis (pandas-based, broad applicability)
+- **Option B**: Specific analysis type (e.g., time series, statistical)
+- **Option C**: Domain-specific (e.g., sales data, scientific data)
+
+What type of data analysis will this skill handle?"
+
+[Continues with collaborative decision-making]
+```
+
+#### Default Mode (Adaptive)
+
+**Purpose:** Balanced approach that adapts to user's natural engagement level.
+
+**When to use:**
+- User doesn't specify a mode
+- Standard skill creation requests
+- Most common scenario
+
+**Workflow:**
+1. Use the three-phase model (create → review → adapt)
+2. Present completed skill with decision explanations
+3. Detect engagement level from user's feedback
+4. Adjust iteration style accordingly
+
+**Key principle:**
+Let the user's feedback reveal their preferred engagement level rather than asking them to choose upfront.
+
+**Example interaction:**
+```
+User: "Create a skill for API testing"
+
+AI: [Autonomous create phase with progress indicators]
+
+"I've created an api-testing skill for both platforms. Here's what I built:
+
+**Key Decisions:**
+- Platform: Both (you didn't specify, this maximizes flexibility)
+- Scope: REST API testing with request validation and response checking
+- Structure: Main instructions in SKILL.md, advanced patterns in REFERENCE.md
+- Description: Triggers on 'API', 'endpoint', 'testing', or 'REST'
+
+**What's included:**
+- Request building and validation
+- Response assertion patterns
+- Error handling and logging
+- Example test scenarios
+
+What would you like to adjust?"
+
+[User feedback determines next steps]
+- "looks good" → Package immediately
+- "add GraphQL support" → Make change, ask if ready
+- "How does validation work?" → Switch to collaborative mode
+```
+
+#### Choosing the Right Mode
+
+**Use Quick Create when:**
+- User emphasizes speed or urgency
+- User explicitly trusts your judgment
+- Task is straightforward and well-defined
+- User has done this before and knows what they want
+
+**Use Guided Create when:**
+- User is learning about Skills
+- User asks to be involved in decisions
+- Task has multiple valid approaches
+- User wants to understand the "why" behind choices
+
+**Use Default (Adaptive) when:**
+- User doesn't specify a preference (most common)
+- You're unsure of user's experience level
+- Standard skill creation request
+
+#### Mode Switching
+
+You can switch modes mid-creation if user signals change in engagement:
+
+**From Quick to Guided:**
+```
+[You're in quick create, packaging]
+User: "Wait, can you explain why you structured it this way?"
+→ Stop packaging, switch to guided mode, provide explanation
+```
+
+**From Guided to Quick:**
+```
+[You're asking detailed questions]
+User: "Actually, just make the decisions and show me what you build"
+→ Switch to quick create, proceed autonomously
+```
+
+**From Default to either:**
+- Watch for explicit mode requests
+- Adapt based on engagement signals
+- Natural transitions are better than forced mode declarations
 
 ### Handling Mixed Signals
 

@@ -35,6 +35,34 @@ Simply ask Claude to create a skill:
 "I need a custom skill for [workflow]"
 ```
 
+### Workflow Modes
+
+The skill-creator adapts to your preferred interaction style:
+
+**Quick Create** - Fast and autonomous:
+```
+"Just quickly create a skill for API testing"
+"Make a basic code review skill, no need to ask questions"
+```
+
+**Guided Create** - Collaborative and educational:
+```
+"Walk me through creating a data analysis skill"
+"Help me learn how to build a skill for testing"
+```
+
+**Default (Adaptive)** - Automatically adapts to your engagement:
+```
+"Create a skill for processing documents"
+[Skill is created, then adapts based on your feedback]
+```
+
+The skill-creator will:
+- Create complete, functional skills autonomously
+- Show you what it built with clear decision explanations
+- Detect your engagement level from your feedback
+- Adapt its approach accordingly (hands-off or hands-on)
+
 ## Templates Included
 
 This skill includes several templates to help you get started:

@@ -1359,6 +1359,410 @@ What's most important for your use case? [or] Should I proceed with [recommended
 
 **Golden Rule:** When unsure, default to medium engagement and adjust based on the next response.
 
+## Workflow Mode Deep Dive
+
+This section provides advanced guidance on the three workflow modes: Quick Create, Guided Create, and Default (Adaptive). Use this when you need detailed implementation patterns beyond the Skill.md overview.
+
+### Quick Create Mode: Advanced Patterns
+
+**Philosophy:** Maximize autonomy, minimize interaction. Trust your training and make intelligent defaults.
+
+#### Decision-Making in Quick Create
+
+When creating skills in Quick Create mode, use these heuristics:
+
+**Platform selection:**
+- Default to "both platforms" unless context clearly indicates otherwise
+- If user mentions "Claude Code" or "plugins" → Claude Code only
+- If user mentions "upload" or "claude.ai" → claude.ai only
+
+**Scope boundaries:**
+- Focus on core use case mentioned
+- Don't add "nice to have" features
+- Skip edge cases unless critical
+- Prefer simple over comprehensive
+
+**Structure choices:**
+- Single SKILL.md for most skills
+- Only add REFERENCE.md if core instructions would exceed 400 lines
+- Skip example files unless essential for functionality
+- No scripts unless specifically mentioned
+
+**Description writing:**
+- Use most obvious trigger keywords
+- Keep to 2-3 sentences maximum
+- Don't overthink—user can refine later
+
+#### Quick Create Response Patterns
+
+**Minimal acknowledgment:**
+```
+✓ Creating [skill-name] skill...
+
+[Progress indicators]
+
+✓ All set! [package details]
+```
+
+**Skip explanatory text:**
+- Don't explain why you made choices
+- Don't describe features in detail
+- Don't suggest improvements
+- Just deliver the working skill
+
+**Installation instructions format:**
+```
+**For claude.ai:**
+1. Upload [filename]
+2. Enable in Settings
+3. Try: "[example prompt]"
+
+**For Claude Code:**
+1. Extract to ~/.claude/skills/
+2. Restart Claude Code
+3. Try: "[example prompt]"
+```
+
+#### Quick Create Error Recovery
+
+If you need critical information that's missing:
+
+**Ask once, proceed with best guess:**
+```
+"Creating for both platforms (specify if you need Claude Code only).
+
+[Continue with creation]"
+```
+
+**Don't:**
+- Ask multiple clarifying questions
+- Present options and wait for choice
+- Explain tradeoffs
+
+### Guided Create Mode: Advanced Patterns
+
+**Philosophy:** Be a teacher and collaborator. Prioritize understanding over speed.
+
+#### Educational Patterns
+
+**Introduce concepts progressively:**
+```
+AI: "First, let's understand how Skills work. Claude loads them in stages:
+1. Metadata (always)
+2. SKILL.md (when invoked)
+3. Other files (as needed)
+
+This means we want to keep SKILL.md focused. Does that make sense?"
+```
+
+**Explain the "why" behind recommendations:**
+```
+AI: "I recommend targeting both platforms because:
+- More users can use your skill
+- No platform-specific code needed
+- You can always create platform-specific versions later
+
+However, if you need Claude Code features like 'allowed-tools', we should focus on Claude Code only. What's more important for your use case?"
+```
+
+**Connect to user's goals:**
+```
+AI: "Since you mentioned this is for your team, let's think about distribution:
+- Plugin: Best for team-wide deployment
+- Project skills: Good for project-specific workflows
+- Personal skills: Just for you
+
+Which distribution method fits your team's workflow?"
+```
+
+#### Question Patterns in Guided Mode
+
+**Option presentation format:**
+```
+**[Decision Point]:**
+
+Option A: [Name]
+- Pros: [2-3 key benefits]
+- Cons: [1-2 limitations]
+- Best for: [use case]
+
+Option B: [Name]
+- Pros: [2-3 key benefits]
+- Cons: [1-2 limitations]
+- Best for: [use case]
+
+Recommendation: [Your suggestion with reasoning]
+
+What fits your needs best?
+```
+
+**Building on user's answers:**
+```
+User: "I need it for API testing"
+
+AI: "Great! API testing skills can be structured a few ways:
+
+**Approach 1: Request/Response Validation**
+Test that APIs return expected data structures and status codes.
+
+**Approach 2: Integration Testing**
+Test full workflows across multiple API calls.
+
+**Approach 3: Contract Testing**
+Verify API matches its specification (OpenAPI/Swagger).
+
+Which testing approach matches what you need?"
+```
+
+#### Checkpoint Patterns
+
+**Major decision checkpoints:**
+```
+AI: "So far we've decided:
+✓ Platform: Both
+✓ Focus: REST API testing
+✓ Validation: Response structure and status codes
+
+Before I continue, does this direction feel right, or should we adjust anything?"
+```
+
+**Work-in-progress checkpoints:**
+```
+AI: "I've drafted the description:
+
+'Tests REST APIs by validating requests, checking responses, and verifying status codes. Use when testing APIs, endpoints, or when user mentions REST, HTTP, or API testing.'
+
+This will trigger when you're working with APIs. Want to adjust the wording or triggers?"
+```
+
+### Default (Adaptive) Mode: Advanced Patterns
+
+**Philosophy:** Start neutral, adapt quickly. Watch for signals, respond fluidly.
+
+#### The Initial Review Pattern
+
+The initial review after autonomous creation is critical—it sets the tone and provides engagement signals.
+
+**Structure of effective initial review:**
+
+1. **Opening (1 line):**
+   ```
+   "I've created a [skill-name] skill for [platform]. Here's what I built:"
+   ```
+
+2. **Key Decisions (4-5 bullets):**
+   ```
+   **Key Decisions:**
+   - Platform: [choice + brief reason]
+   - Scope: [what's included]
+   - Structure: [file organization]
+   - Description: [trigger approach]
+   - [Optional 5th item]
+   ```
+
+3. **What's Included (3-5 bullets):**
+   ```
+   **What's included:**
+   - [Core feature 1]
+   - [Core feature 2]
+   - [Core feature 3]
+   - [Supporting feature]
+   ```
+
+4. **Invitation for feedback (1 line):**
+   ```
+   "What would you like to adjust?"
+   ```
+
+**Why this works:**
+- Decision explanations let high-engagement users ask "why"
+- Brief format doesn't overwhelm low-engagement users
+- Open-ended question allows any level of engagement
+- User's response clearly indicates engagement level
+
+#### Reading Initial Responses
+
+**Length indicators:**
+| Response Length | Likely Engagement | Next Action |
+|----------------|-------------------|-------------|
+| < 5 words | Low | Package immediately |
+| 5-15 words | Medium | Make change, checkpoint |
+| 15-30 words | Medium-High | Assess content, not just length |
+| 30+ words | High | Switch to collaborative |
+| Question(s) | Medium-High | Answer, then assess |
+
+**Content overrides length:**
+- "looks good thanks!" (13 words) → Low engagement (approval)
+- "add X, Y, Z" (3 words) → Medium engagement (directives)
+- "why X?" (2 words) → High engagement (learning question)
+
+#### Adapting Mid-Conversation
+
+**Detecting engagement shifts:**
+
+Early signal → late signal pattern:
+```
+User's first response: "looks good" [low]
+User's second response: "actually, can you add error handling?" [medium]
+
+Interpretation: User reviewed more carefully, found something to improve.
+Action: Treat as medium engagement, make change efficiently.
+```
+
+Question → directive pattern:
+```
+User's first response: "how does progressive disclosure work?" [high]
+You: [detailed explanation]
+User's second response: "got it, let's add that to the skill" [medium]
+
+Interpretation: User learned what they needed, now ready to execute.
+Action: Shift to medium engagement, implement efficiently.
+```
+
+Multiple iterations pattern:
+```
+Iteration 1: "add X" [medium]
+You: [add X]
+Iteration 2: "change Y" [medium]
+You: [change Y]
+Iteration 3: "tweak Z" [medium]
+
+After 3+ iterations: "Ready to package, or keep refining?"
+```
+
+### Mode Selection Decision Tree
+
+Use this tree when user's request is ambiguous:
+
+```
+User requests skill creation
+    |
+    ├─ Mentions "quick" or "fast" or "just do it"
+    │  └─> Quick Create Mode
+    |
+    ├─ Mentions "walk me through" or "help me learn"
+    │  └─> Guided Create Mode
+    |
+    ├─ Asks clarifying questions before you start
+    │  └─> Guided Create Mode (user wants collaboration)
+    |
+    ├─ Provides detailed requirements upfront
+    │  └─> Default Mode (they know what they want)
+    |
+    └─ Standard request, no mode indicators
+       └─> Default Mode (adapt from feedback)
+```
+
+### Common Mode Selection Mistakes
+
+#### Mistake 1: Over-interpreting single words
+
+```
+❌ Bad:
+User: "Create a skill for testing"
+AI: "I notice you didn't say 'quick', so I'll walk you through every decision..."
+
+✓ Good:
+User: "Create a skill for testing"
+AI: [Uses default mode, adapts from feedback]
+```
+
+#### Mistake 2: Ignoring explicit mode requests
+
+```
+❌ Bad:
+User: "Just quickly make a skill for API testing"
+AI: "Let's think through the requirements together. First, what APIs..."
+
+✓ Good:
+User: "Just quickly make a skill for API testing"
+AI: "Creating api-testing skill...
+[Quick autonomous creation]"
+```
+
+#### Mistake 3: Staying in wrong mode after shift signal
+
+```
+❌ Bad:
+User: "Walk me through creating a data skill"
+AI: [Guided mode, asking questions]
+User: "Actually, just make the standard decisions and show me"
+AI: "Sure! Now let's discuss the next choice: should we..."
+
+✓ Good:
+User: "Walk me through creating a data skill"
+AI: [Guided mode, asking questions]
+User: "Actually, just make the standard decisions and show me"
+AI: "Understood! Switching to autonomous creation...
+[Proceeds with Quick Create approach]"
+```
+
+#### Mistake 4: Forcing mode declaration
+
+```
+❌ Bad:
+User: "Create a skill for code reviews"
+AI: "Would you like Quick Create or Guided Create mode?"
+
+✓ Good:
+User: "Create a skill for code reviews"
+AI: [Creates autonomously, adapts from feedback—Default Mode]
+```
+
+### Hybrid Patterns
+
+Sometimes you'll need to blend approaches:
+
+**Quick Create with one clarification:**
+```
+User: "Just make a skill for processing documents"
+
+AI: "Creating document-processing skill for both platforms...
+
+One quick question: PDF, Word, or both?
+(I'll default to both if you don't specify)"
+
+[If no response in context, proceed with both]
+```
+
+**Guided Create with time limits:**
+```
+User: "Walk me through creating an API skill, but I only have 10 minutes"
+
+AI: "Got it! I'll guide you through the key decisions quickly.
+
+Quick decision 1: Platform?
+- Both (recommended, 2 min to set up)
+- Claude Code only (3 min, more options)
+
+[Fast-paced guided mode]"
+```
+
+**Default Mode with learning moments:**
+```
+[Default mode creation]
+User: "what's REFERENCE.md for?"
+
+AI: "REFERENCE.md is for detailed content that doesn't need to be in the main SKILL.md. Claude loads it on-demand when needed, keeping the primary skill file focused.
+
+For your api-testing skill, I put the main workflow in SKILL.md and detailed HTTP status code reference in REFERENCE.md.
+
+[Returns to adaptive mode without forcing deeper discussion]"
+```
+
+### Summary: Mode Selection Quick Reference
+
+| User Signal | Mode | Key Behaviors |
+|------------|------|---------------|
+| "just make it", "quickly" | Quick Create | Minimal questions, autonomous, immediate packaging |
+| "walk me through", "help me learn" | Guided Create | Frequent questions, educational, collaborative |
+| Standard request | Default (Adaptive) | Autonomous create, comprehensive review, adapt from feedback |
+| "actually, just..." mid-conversation | Switch to Quick | Honor the mode change immediately |
+| Asks "why" or "how" questions | Switch to Guided | Provide explanations, invite more questions |
+| Multiple approvals | Stay in current | Don't overthink, respect user's pattern |
+
+**Remember:** Modes are guidelines, not rigid rules. Prioritize user's immediate signals over mode classification.
+
 ## Advanced: Skills with Executable Code
 
 ### Solve, Don't Punt
