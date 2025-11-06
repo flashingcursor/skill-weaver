@@ -2,7 +2,7 @@
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
 metadata:
-  version: 0.1.0-alpha.3
+  version: 0.1.0-alpha.4
   dependencies: none
 ---
 
@@ -15,6 +15,12 @@ This Skill helps users create Skills for both Claude Code and claude.ai followin
 Skills package expertise into discoverable capabilities. Each Skill consists of a SKILL.md file with instructions that Claude reads when relevant, plus optional supporting files like scripts and templates.
 
 **Model-invoked**: Skills are autonomously triggered by Claude based on your request and the Skill's description. This is different from slash commands (which you explicitly type to trigger).
+
+## Version
+
+**Current Version**: 0.1.0-alpha.4
+
+This is an alpha release. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 
@@ -145,7 +151,17 @@ metadata:
 allowed-tools: Read, Grep, Glob  # Restrict which tools Claude can use
 ```
 
-**Note:** claude.ai only accepts these frontmatter keys: `name`, `description`, `license`, `allowed-tools`, `metadata`. Version and dependencies must be nested under `metadata`.
+**Platform Compatibility Notes:**
+
+claude.ai has strict frontmatter validation and only accepts these top-level keys: `name`, `description`, `license`, `allowed-tools`, `metadata`. This is why `version` and `dependencies` must be nested under the `metadata` field.
+
+Claude Code is more permissive and will accept the `metadata` field without issues. While Claude Code's documentation shows `version` as a top-level field, using the `metadata` structure ensures your Skill works on both platforms.
+
+**Best Practice for Dual-Platform Support:**
+1. Use the `metadata` field format shown above for maximum compatibility
+2. Include version information in the markdown body as well (see the Version section)
+3. This provides redundancy - version info appears in both frontmatter and documentation
+4. Omit the `allowed-tools` field if targeting both platforms (Claude Code only)
 
 **Name requirements (both platforms):**
 - Lowercase letters, numbers, and hyphens only

@@ -3,17 +3,28 @@ name: your-skill-name
 description: Brief description of what this Skill does and when Claude should use it. Include specific triggers and keywords. Use third person. Max 1024 characters. Example - "Processes CSV files and generates reports. Use when analyzing data, working with spreadsheets, or when user mentions CSV, data analysis, or reports."
 metadata:
   version: 1.0.0
-# Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - remove for claude.ai)
+  # Optional: Add dependencies if needed
+  # dependencies: python>=3.8, pandas>=1.5.0
+# Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - omit if targeting both platforms)
 # allowed-tools: Read, Grep, Glob  # For read-only Skills
 ---
 
-# IMPORTANT: Works on both Claude Code and claude.ai
-# IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
-# IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
-# IMPORTANT: File must be named SKILL.md (uppercase SKILL)
-# IMPORTANT: For Claude Code: Place in ~/.claude/skills/ (personal) or .claude/skills/ (project)
-# IMPORTANT: For claude.ai: Create directory, then ZIP it for upload via Settings > Capabilities
-# IMPORTANT: Remove allowed-tools field if targeting claude.ai
+# IMPORTANT: Dual-Platform Compatibility
+# This template works on both Claude Code and claude.ai
+#
+# FRONTMATTER FORMAT:
+# - version and dependencies MUST be under "metadata" field (claude.ai requirement)
+# - Claude Code accepts this format without issues
+# - For dual-platform: omit "allowed-tools" field (Claude Code only)
+#
+# REQUIREMENTS:
+# - Name: lowercase-with-hyphens, max 64 chars, gerund form preferred
+# - Description: specific triggers, third person, max 1024 chars
+# - File: must be named SKILL.md (uppercase)
+#
+# INSTALLATION:
+# - Claude Code: ~/.claude/skills/ (personal) or .claude/skills/ (project)
+# - claude.ai: ZIP directory and upload via Settings > Capabilities
 
 # Your Skill Name
 
