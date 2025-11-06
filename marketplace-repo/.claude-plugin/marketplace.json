@@ -15,7 +15,7 @@
         "repo": "flashingcursor/skill-creator-plugin"
       },
       "description": "Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
-      "version": "0.1.0-alpha.5",
+      "version": "0.1.0",
       "author": "flashingcursor",
       "category": "productivity",
       "keywords": [

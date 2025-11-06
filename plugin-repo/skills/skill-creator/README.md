@@ -220,6 +220,12 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.1.0**: First production release with complete adaptive workflow system
+  - Adaptive skill creation workflow (Quick Create, Guided Create, Default modes)
+  - Comprehensive engagement detection patterns
+  - Progress indicators and decision explanations
+  - Mode switching and hybrid patterns
+  - Full dual-platform support (Claude Code and claude.ai)
 - **0.1.0-alpha.5**: Added adaptive skill creation workflow with engagement detection and progress indicators
 - **0.1.0-alpha.4**: Enhanced dual-platform compatibility with version redundancy and improved documentation
 - **0.1.0-alpha.3**: Fixed auto-release workflow to extract version from metadata field

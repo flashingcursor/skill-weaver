@@ -2,7 +2,7 @@
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
 metadata:
-  version: 0.1.0-alpha.5
+  version: 0.1.0
   dependencies: none
 ---
 
@@ -18,9 +18,9 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.1.0-alpha.5
+**Current Version**: 0.1.0
 
-This is an alpha release. For version history and changelog, see [README.md](README.md#version-history).
+This is the first production release. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 
