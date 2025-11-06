@@ -22,6 +22,9 @@ Creates custom Skills for Claude following official best practices.
 ```
 
 **Features**:
+- Adaptive workflow modes (Quick Create, Guided Create, Default)
+- Autonomous skill creation with progress indicators
+- Engagement detection and response adaptation
 - Comprehensive skill creation guide
 - Ready-to-use templates (basic and advanced)
 - Script examples (Python and JavaScript)
@@ -33,6 +36,8 @@ Creates custom Skills for Claude following official best practices.
 ```
 "Create a new skill for code reviews"
 "Help me build a skill for data analysis"
+"Just quickly create a skill for API testing"
+"Walk me through creating a data analysis skill"
 ```
 
 **Documentation**:

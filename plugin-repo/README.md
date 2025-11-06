@@ -40,6 +40,27 @@ Once installed, the skill-creator skill is automatically available. Try:
 "Create a skill for [your purpose]"
 ```
 
+### Adaptive Workflow Modes
+
+The skill-creator adapts to your preferred interaction style:
+
+**Quick Create** - Fast and autonomous:
+```
+"Just quickly create a skill for API testing"
+```
+
+**Guided Create** - Collaborative and educational:
+```
+"Walk me through creating a data analysis skill"
+```
+
+**Default (Adaptive)** - Automatically adapts based on your feedback:
+```
+"Create a skill for processing documents"
+```
+
+The skill will create complete, functional skills autonomously, show you what it built with decision explanations, detect your engagement level, and adapt accordingly.
+
 ## What You Can Build
 
 With skill-creator, create:

@@ -2,7 +2,7 @@
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
 metadata:
-  version: 0.1.0-alpha.4
+  version: 0.1.0-alpha.5
   dependencies: none
 ---
 
@@ -18,7 +18,7 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.1.0-alpha.4
+**Current Version**: 0.1.0-alpha.5
 
 This is an alpha release. For version history and changelog, see [README.md](README.md#version-history).
 
@@ -53,6 +53,354 @@ Use when:
 - User needs help structuring a Skill directory
 - User asks about Skill authoring best practices
 - User wants to package, test, or share a Skill
+
+## Adaptive Skill Creation Workflow
+
+This Skill uses a create-review-adapt approach that minimizes friction while adapting to user engagement level.
+
+### Three-Phase Interaction Model
+
+**Phase 1: AUTONOMOUS CREATE (with progress indicators)**
+- Create a complete, functional Skill based on the user's initial request
+- Show clear progress as you work:
+  ```
+  Creating Skill structure... ✓
+  Writing description and metadata... ✓
+  Generating core instructions... ✓
+  Adding examples and templates... ✓
+  ```
+- Make intelligent decisions about structure, scope, and features
+- Aim for a production-ready Skill that could be used immediately
+
+**Phase 2: COMPREHENSIVE REVIEW (with decision explanations)**
+- Present the complete Skill to the user
+- Explain key decisions you made and why:
+  - "I chose platform X because..."
+  - "The description focuses on Y to ensure triggering when..."
+  - "I structured it as Z for these reasons..."
+- Highlight what's included and what's optional
+- Solicit feedback with open-ended question: "What would you like to adjust?"
+
+**Phase 3: ENGAGEMENT DETECTION (adapt based on feedback)**
+- Analyze the user's response to determine engagement level
+- Adapt your iteration approach accordingly
+
+### Detecting Engagement Levels
+
+**Low Engagement** - User provides minimal feedback:
+- Examples: "looks good", "ship it", "that works", "👍"
+- **Response**: Package immediately, provide installation instructions
+- **Why**: User trusts your judgment and wants quick results
+- Skip further iteration unless they ask
+
+**Medium Engagement** - User requests specific changes:
+- Examples: "tweak the description", "add error handling", "change the name"
+- **Response**: Make the requested adjustments efficiently
+- Present updated version briefly
+- Ask: "Ready to package, or any other changes?"
+- **Why**: User has specific needs but doesn't want deep collaboration
+
+**High Engagement** - User asks detailed questions or expresses uncertainty:
+- Examples: "How does X work?", "Should we handle Y?", "What about Z scenario?"
+- **Response**: Switch to collaborative checkpoint mode
+- Break remaining work into smaller steps
+- Explain options and trade-offs
+- Ask for input before each significant decision
+- **Why**: User wants to understand and influence the design
+
+### Progress Indicators Best Practices
+
+Show progress during autonomous creation to:
+- Reassure the user that work is happening
+- Indicate what stage you're at
+- Set expectations for what's being created
+
+**Good progress indicators:**
+```
+Analyzing requirements... ✓
+Setting up Skill structure for claude.ai... ✓
+Writing SKILL.md with comprehensive instructions... ✓
+Creating validation script template... ✓
+Preparing example prompts for testing... ✓
+```
+
+**Avoid:**
+- Too many micro-updates (overwhelming)
+- Vague indicators ("working...", "processing...")
+- No indicators at all (user wonders what's happening)
+
+### Decision Explanation Examples
+
+When presenting the Skill in Phase 2, explain your key choices:
+
+**Platform decisions:**
+"I created this for both platforms since you didn't specify. This means omitting `allowed-tools` (Claude Code-only), but it gives you maximum flexibility for distribution."
+
+**Structural decisions:**
+"I included a REFERENCE.md file for detailed API documentation instead of putting everything in SKILL.md. This keeps the main instructions concise while Claude can load the reference on-demand when needed."
+
+**Scope decisions:**
+"I focused on the core workflow you described and added basic error handling. I didn't include advanced edge cases yet - we can add those if you need them."
+
+**Description decisions:**
+"The description mentions 'CSV', 'data analysis', and 'pandas' as triggers. This should invoke the Skill when you're working with data files without being too broad."
+
+### Workflow Variants
+
+Users can explicitly request different interaction styles. Recognize these requests and adapt accordingly.
+
+#### Quick Create Mode
+
+**Purpose:** Fast, autonomous Skill creation with minimal interaction.
+
+**When users request this:**
+- "just make it"
+- "create quickly"
+- "I trust your judgment, just build it"
+- "make a basic version fast"
+- "no need to ask me questions, just do it"
+
+**Workflow:**
+1. Ask minimal clarifying questions (only platform and basic purpose)
+2. Create skill autonomously with progress indicators
+3. Show brief summary of what was created
+4. Package immediately
+5. Provide installation instructions
+
+**What to skip:**
+- Lengthy review with decision explanations
+- Asking "what would you like to adjust?"
+- Waiting for feedback before packaging
+- Suggesting additional features
+
+**Example interaction:**
+```
+User: "Just create a skill for code reviews quickly"
+
+AI: "Creating code-review skill for both platforms...
+
+Creating Skill structure... ✓
+Writing description and instructions... ✓
+Adding review checklist... ✓
+Packaging... ✓
+
+✓ All set! Here's your code-reviewer.zip
+
+**Installation:**
+[Brief platform-specific instructions]
+
+**Quick test:**
+Try: 'Review this Python file for best practices'"
+```
+
+#### Guided Create Mode
+
+**Purpose:** Collaborative, educational Skill creation with user involved at each step.
+
+**When users request this:**
+- "walk me through it"
+- "let's build this together"
+- "I want to understand the process"
+- "help me learn how to create this"
+- "let's do this step by step"
+- "can you explain as we go?"
+
+**Workflow:**
+1. Start with comprehensive requirements gathering
+2. Present options for major decisions (platform, structure, scope)
+3. Explain tradeoffs and implications
+4. Get user input before proceeding with each section
+5. Show work in progress at checkpoints
+6. Explain choices as you make them
+7. Invite questions throughout
+
+**What to include:**
+- Detailed explanations of decisions
+- Options and tradeoffs
+- Educational context about Skills
+- Frequent checkpoints for feedback
+- Encouragement to ask questions
+
+**Example interaction:**
+```
+User: "Walk me through creating a skill for data analysis"
+
+AI: "I'd be happy to guide you through creating a data-analysis skill! Let's start by making some key decisions together.
+
+**Platform Choice:**
+We need to decide where this skill will run:
+- **Claude Code only**: Can use tool restrictions, distribute via plugin
+- **claude.ai only**: ZIP upload, simpler for individuals
+- **Both platforms**: Maximum compatibility, skip platform-specific features
+
+Which environment are you targeting?"
+
+User: "Both platforms"
+
+AI: "Great choice for maximum flexibility! Since we're targeting both platforms, we'll use the metadata field format and skip the allowed-tools field.
+
+**Skill Scope:**
+For data analysis, we could focus on:
+- **Option A**: General CSV/Excel analysis (pandas-based, broad applicability)
+- **Option B**: Specific analysis type (e.g., time series, statistical)
+- **Option C**: Domain-specific (e.g., sales data, scientific data)
+
+What type of data analysis will this skill handle?"
+
+[Continues with collaborative decision-making]
+```
+
+#### Default Mode (Adaptive)
+
+**Purpose:** Balanced approach that adapts to user's natural engagement level.
+
+**When to use:**
+- User doesn't specify a mode
+- Standard skill creation requests
+- Most common scenario
+
+**Workflow:**
+1. Use the three-phase model (create → review → adapt)
+2. Present completed skill with decision explanations
+3. Detect engagement level from user's feedback
+4. Adjust iteration style accordingly
+
+**Key principle:**
+Let the user's feedback reveal their preferred engagement level rather than asking them to choose upfront.
+
+**Example interaction:**
+```
+User: "Create a skill for API testing"
+
+AI: [Autonomous create phase with progress indicators]
+
+"I've created an api-testing skill for both platforms. Here's what I built:
+
+**Key Decisions:**
+- Platform: Both (you didn't specify, this maximizes flexibility)
+- Scope: REST API testing with request validation and response checking
+- Structure: Main instructions in SKILL.md, advanced patterns in REFERENCE.md
+- Description: Triggers on 'API', 'endpoint', 'testing', or 'REST'
+
+**What's included:**
+- Request building and validation
+- Response assertion patterns
+- Error handling and logging
+- Example test scenarios
+
+What would you like to adjust?"
+
+[User feedback determines next steps]
+- "looks good" → Package immediately
+- "add GraphQL support" → Make change, ask if ready
+- "How does validation work?" → Switch to collaborative mode
+```
+
+#### Choosing the Right Mode
+
+**Use Quick Create when:**
+- User emphasizes speed or urgency
+- User explicitly trusts your judgment
+- Task is straightforward and well-defined
+- User has done this before and knows what they want
+
+**Use Guided Create when:**
+- User is learning about Skills
+- User asks to be involved in decisions
+- Task has multiple valid approaches
+- User wants to understand the "why" behind choices
+
+**Use Default (Adaptive) when:**
+- User doesn't specify a preference (most common)
+- You're unsure of user's experience level
+- Standard skill creation request
+
+#### Mode Switching
+
+You can switch modes mid-creation if user signals change in engagement:
+
+**From Quick to Guided:**
+```
+[You're in quick create, packaging]
+User: "Wait, can you explain why you structured it this way?"
+→ Stop packaging, switch to guided mode, provide explanation
+```
+
+**From Guided to Quick:**
+```
+[You're asking detailed questions]
+User: "Actually, just make the decisions and show me what you build"
+→ Switch to quick create, proceed autonomously
+```
+
+**From Default to either:**
+- Watch for explicit mode requests
+- Adapt based on engagement signals
+- Natural transitions are better than forced mode declarations
+
+### Handling Mixed Signals
+
+If engagement level is unclear:
+- Default to medium engagement
+- Make the requested changes
+- Provide one more checkpoint: "How does this look?"
+- Adjust based on next response
+
+### When to Package and Deliver
+
+**Package immediately when:**
+- User gives low-engagement feedback ("looks good")
+- User explicitly says to finalize/ship/package
+- User asks "how do I install this?"
+- You've made requested changes and gotten approval
+
+**Continue iterating when:**
+- User asks more questions
+- User requests additional changes
+- User expresses uncertainty ("hmm, not sure about...")
+- User wants to explore alternatives ("what if we...")
+
+### Example Interaction Flow
+
+**Initial Request:**
+User: "Create a skill for reviewing Python code"
+
+**Phase 1 - Autonomous Create:**
+```
+Creating Skill structure... ✓
+Writing description and metadata... ✓
+Generating code review instructions... ✓
+Adding Python best practices... ✓
+Creating example prompts... ✓
+```
+
+**Phase 2 - Comprehensive Review:**
+"I've created a code-reviewer Skill for both Claude Code and claude.ai. Here's what I built:
+
+**Key Decisions:**
+- Platform: Both (for maximum flexibility)
+- Scope: Focused on Python best practices, security issues, and style
+- Structure: Main instructions in SKILL.md, detailed Python patterns in REFERENCE.md
+- Description: Triggers on 'Python', 'code review', 'PR', or '.py' files
+
+**What's included:**
+- Comprehensive review checklist
+- Security vulnerability patterns
+- PEP 8 style guidance
+- Common anti-patterns to catch
+
+What would you like to adjust?"
+
+**Phase 3 - Engagement Detection:**
+
+*Low engagement response:* "Looks great!"
+→ Package immediately, provide installation instructions
+
+*Medium engagement response:* "Can you add type hint checking?"
+→ Add type hints to checklist, show update, ask if ready
+
+*High engagement response:* "Should we include async code patterns? What about testing coverage?"
+→ Switch to collaborative mode, discuss options, get input on priorities
 
 ## Core Principles
 
