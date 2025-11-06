@@ -192,6 +192,7 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.1.0-alpha.5**: Added adaptive skill creation workflow with engagement detection and progress indicators
 - **0.1.0-alpha.4**: Enhanced dual-platform compatibility with version redundancy and improved documentation
 - **0.1.0-alpha.3**: Fixed auto-release workflow to extract version from metadata field
 - **0.1.0-alpha.2**: Fixed frontmatter structure for claude.ai compatibility, updated documentation

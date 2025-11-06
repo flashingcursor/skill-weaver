@@ -12,7 +12,7 @@ Add this marketplace to your Claude Code:
 
 ## Available Plugins
 
-### skill-creator v0.1.0-alpha.4
+### skill-creator v0.1.0-alpha.5
 
 Creates custom Skills for Claude following official best practices.
 

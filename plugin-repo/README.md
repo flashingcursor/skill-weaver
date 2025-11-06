@@ -6,7 +6,7 @@ Claude Code plugin containing the skill-creator skill.
 
 This plugin provides the **skill-creator** skill, which helps you create custom Skills for Claude following official best practices.
 
-**Version**: 0.1.0-alpha.4
+**Version**: 0.1.0-alpha.5
 
 ## Installation
 

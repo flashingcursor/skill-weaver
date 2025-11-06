@@ -1,6 +1,6 @@
 {
   "name": "skill-creator",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "description": "Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
   "author": {
     "name": "flashingcursor",
