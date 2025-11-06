@@ -145,12 +145,22 @@ skill-name.zip
 
 ### Optional Fields
 
-**Important:** For claude.ai, `version` and `dependencies` must be nested under the `metadata` field. Claude Code accepts both formats.
+**Important for Dual-Platform Compatibility:**
+
+claude.ai enforces strict frontmatter validation and ONLY accepts these top-level keys: `name`, `description`, `license`, `allowed-tools`, `metadata`. Therefore, `version` and `dependencies` must be nested under the `metadata` field to work on claude.ai.
+
+Claude Code is more permissive and will accept the `metadata` field without issues (it may ignore unknown fields). While historical Claude Code documentation showed `version` as a top-level field, using the `metadata` structure ensures compatibility with both platforms.
+
+**Recommended Approach:**
+- Use `metadata` field for frontmatter version/dependencies (works on both platforms)
+- Include version information in markdown body as well (## Version section)
+- This provides redundancy and ensures visibility regardless of platform
 
 #### metadata
-- **Type**: Object (for claude.ai) or optional wrapper (for Claude Code)
-- **Purpose**: Contains version and dependencies information
-- **Required for claude.ai**: Yes, if you need version/dependencies tracking
+- **Type**: Object containing version and dependencies
+- **Purpose**: Namespace for version tracking information
+- **Required for claude.ai**: Yes, if you need version/dependencies in frontmatter
+- **Claude Code**: Accepted but may be ignored; information in markdown body is also parsed
 - **Format**:
   ```yaml
   metadata:

@@ -4,19 +4,31 @@ description: Brief description of what this Skill does and when Claude should us
 metadata:
   version: 1.0.0
   dependencies: python>=3.8, pandas>=1.5.0, requests>=2.28.0
-# Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - remove for claude.ai)
+# Optional: Restrict which tools Claude can use (CLAUDE CODE ONLY - omit if targeting both platforms)
 # allowed-tools: Read, Bash  # For data analysis without file modifications
 ---
 
-# IMPORTANT: Works on both Claude Code and claude.ai
-# IMPORTANT: Name must use lowercase-with-hyphens, max 64 chars, gerund form preferred
-# IMPORTANT: Description must be specific, include triggers, use third person, max 1024 chars
-# IMPORTANT: File must be named SKILL.md (uppercase SKILL)
-# IMPORTANT: SKILL.md body should stay under 500 lines - move details to reference.md
-# IMPORTANT: For Claude Code: Place in ~/.claude/skills/ (personal) or .claude/skills/ (project)
-# IMPORTANT: For claude.ai: Create directory, then ZIP for upload via Settings > Capabilities
-# IMPORTANT: Dependencies: Auto-install (Claude Code) or install when needed (claude.ai)
-# IMPORTANT: Remove allowed-tools field if targeting claude.ai
+# IMPORTANT: Dual-Platform Compatibility
+# This template works on both Claude Code and claude.ai
+#
+# FRONTMATTER FORMAT:
+# - version and dependencies MUST be under "metadata" field (claude.ai requirement)
+# - Claude Code accepts this format without issues
+# - For dual-platform: omit "allowed-tools" field (Claude Code only)
+#
+# REQUIREMENTS:
+# - Name: lowercase-with-hyphens, max 64 chars, gerund form preferred
+# - Description: specific triggers, third person, max 1024 chars
+# - File: must be named SKILL.md (uppercase)
+# - Keep SKILL.md under 500 lines - move details to REFERENCE.md
+#
+# DEPENDENCIES:
+# - Claude Code: Auto-installs from PyPI/npm (or asks permission)
+# - claude.ai: Can install when needed from PyPI/npm
+#
+# INSTALLATION:
+# - Claude Code: ~/.claude/skills/ (personal) or .claude/skills/ (project)
+# - claude.ai: ZIP directory and upload via Settings > Capabilities
 
 # Your Advanced Skill Name
 
