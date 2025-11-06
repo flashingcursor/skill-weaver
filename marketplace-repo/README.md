@@ -2,6 +2,12 @@
 
 Claude Code marketplace for Skill Weaver plugins - tools for creating and managing custom Claude Skills.
 
+## Latest Update
+
+**2025-11-06**: skill-creator v0.1.0 - First production release now available! 🎉
+
+This release includes the complete adaptive workflow system with engagement detection. See [CHANGELOG.md](CHANGELOG.md) for details.
+
 ## Installation
 
 Add this marketplace to your Claude Code:
