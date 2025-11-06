@@ -2,28 +2,67 @@
 
 A meta-skill repository for creating Custom Skills for Claude.
 
+[![GitHub release](https://img.shields.io/github/v/release/flashingcursor/skill-weaver?include_prereleases)](https://github.com/flashingcursor/skill-weaver/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 ## What is This?
 
 This repository contains **Skill Creator**, a Custom Skill that helps you build other Custom Skills for Claude. It's a comprehensive guide and toolset that ensures your skills follow best practices, proper structure, and security guidelines.
 
+**Works on both**:
+- ✅ **claude.ai** (ZIP upload)
+- ✅ **Claude Code** (Plugin, Git, or Manual install)
+
+## Installation
+
+### 📦 Quick Install
+
+**For claude.ai**:
+1. [Download latest release](https://github.com/flashingcursor/skill-weaver/releases/latest) (ZIP file)
+2. Go to Settings → Capabilities → Skills → Upload
+3. Enable and test: _"Create a skill for code reviews"_
+
+**For Claude Code**:
+```bash
+# Via Plugin Marketplace (recommended)
+/plugin marketplace add flashingcursor/skill-weaver-marketplace
+/plugin install skill-creator
+
+# Or via Git
+git clone https://github.com/flashingcursor/skill-weaver.git
+cp -r skill-weaver/skill-creator ~/.claude/skills/
+# Restart Claude Code
+```
+
+📚 **Detailed Instructions**: See [INSTALLATION.md](INSTALLATION.md) for step-by-step guides, troubleshooting, and all installation methods.
+
+## Sharing with Your Team
+
+Want to distribute this skill to your team or organization?
+
+👥 **See [SHARING.md](SHARING.md)** for:
+- Distribution methods for teams
+- Plugin marketplace setup
+- Team rollout guides
+- Announcement templates
+- Best practices for adoption
+
 ## Quick Start
 
-### Download and Use
+Once installed, try these prompts:
 
-1. **Download** the latest release from [Releases](../../releases)
-2. **Upload** to Claude via Settings > Capabilities
-3. **Enable** the Skill Creator skill
-4. **Start** creating custom skills by asking Claude:
-   ```
-   "Create a new skill for [your purpose]"
-   "Help me build a skill that does [task]"
-   ```
+```
+"Create a new skill for [your purpose]"
+"Help me build a skill that does [task]"
+"Create a skill for code reviews"
+"Build a skill for analyzing CSV data"
+```
 
 ### For Developers
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/skill-weaver.git
+git clone https://github.com/flashingcursor/skill-weaver.git
 cd skill-weaver
 
 # Validate the skill
@@ -187,8 +226,16 @@ Skill Creator will help you:
 5. Test and validate
 ```
 
-## Resources
+## Documentation
 
+### This Repository
+- **[INSTALLATION.md](INSTALLATION.md)** - Complete installation guide for all platforms
+- **[SHARING.md](SHARING.md)** - Team distribution and rollout guide
+- **[skill-creator/Skill.md](skill-creator/Skill.md)** - Main skill instructions
+- **[skill-creator/REFERENCE.md](skill-creator/REFERENCE.md)** - Technical reference
+- **[skill-creator/README.md](skill-creator/README.md)** - Skill overview
+
+### External Resources
 - **Skills Documentation**: [Claude Skills Docs](https://docs.claude.com/claude/docs/skills)
 - **Example Skills**: [Anthropic Skills Repository](https://github.com/anthropics/skills)
 - **Best Practices**: [Skill Authoring Guide](https://docs.claude.com/claude/docs/skill-authoring-best-practices)

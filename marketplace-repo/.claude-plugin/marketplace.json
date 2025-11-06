@@ -1,0 +1,31 @@
+{
+  "name": "skill-weaver-marketplace",
+  "owner": {
+    "name": "flashingcursor",
+    "email": "contact@example.com",
+    "url": "https://github.com/flashingcursor"
+  },
+  "description": "Claude Code marketplace for Skill Weaver plugins - tools for creating and managing custom Claude Skills",
+  "homepage": "https://github.com/flashingcursor/skill-weaver",
+  "plugins": [
+    {
+      "name": "skill-creator",
+      "source": {
+        "source": "github",
+        "repo": "flashingcursor/skill-creator-plugin"
+      },
+      "description": "Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
+      "version": "0.1.0-alpha.4",
+      "author": "flashingcursor",
+      "category": "productivity",
+      "keywords": [
+        "skills",
+        "authoring",
+        "templates",
+        "development",
+        "productivity"
+      ],
+      "homepage": "https://github.com/flashingcursor/skill-weaver"
+    }
+  ]
+}
