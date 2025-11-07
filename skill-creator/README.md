@@ -220,6 +220,12 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.1.1-beta.1**: UX improvements based on user feedback (beta)
+  - Changed Phase 2 from comprehensive review to concise summary
+  - Added artifact creation patterns for real-time file visibility
+  - Implemented download link repetition pattern to prevent loss in scrollback
+  - Updated Initial Review Pattern to focus on digestible summaries
+  - Added "offer to explain" pattern instead of upfront detailed explanations
 - **0.1.0**: First production release with complete adaptive workflow system
   - Adaptive skill creation workflow (Quick Create, Guided Create, Default modes)
   - Comprehensive engagement detection patterns

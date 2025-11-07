@@ -2,7 +2,7 @@
 name: skill-creator
 description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
 metadata:
-  version: 0.1.0
+  version: 0.1.1-beta.1
   dependencies: none
 ---
 
@@ -18,9 +18,9 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.1.0
+**Current Version**: 0.1.1-beta.1
 
-This is the first production release. For version history and changelog, see [README.md](README.md#version-history).
+This beta release includes UX improvements based on user feedback. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 
@@ -71,14 +71,14 @@ This Skill uses a create-review-adapt approach that minimizes friction while ada
   ```
 - Make intelligent decisions about structure, scope, and features
 - Aim for a production-ready Skill that could be used immediately
+- **Create artifacts for visibility**: Use the Write tool to create each file (SKILL.md, REFERENCE.md, templates, scripts) which opens artifact panes showing users what's being built in real-time
 
-**Phase 2: COMPREHENSIVE REVIEW (with decision explanations)**
-- Present the complete Skill to the user
-- Explain key decisions you made and why:
-  - "I chose platform X because..."
-  - "The description focuses on Y to ensure triggering when..."
-  - "I structured it as Z for these reasons..."
-- Highlight what's included and what's optional
+**Phase 2: CONCISE SUMMARY (with offer to elaborate)**
+- Present a digestible summary of what was created
+- List files created (SKILL.md, REFERENCE.md, templates, etc.)
+- Summarize key features (3-5 bullets)
+- Provide prominent download link to artifact/ZIP
+- Offer to explain: "I can explain any decisions if you'd like"
 - Solicit feedback with open-ended question: "What would you like to adjust?"
 
 **Phase 3: ENGAGEMENT DETECTION (adapt based on feedback)**
@@ -107,6 +107,33 @@ This Skill uses a create-review-adapt approach that minimizes friction while ada
 - Explain options and trade-offs
 - Ask for input before each significant decision
 - **Why**: User wants to understand and influence the design
+
+### Download Link Management
+
+**Re-emphasize download links** to keep them visible and accessible:
+
+**After providing explanations:**
+```
+[Detailed explanation of validation patterns]
+
+**Download:** [Download api-testing.zip]
+
+Any other questions, or ready to use it?
+```
+
+**After making changes:**
+```
+✓ Updated to include GraphQL support
+
+**Download:** [Download api-testing.zip]
+
+Ready to go, or any other changes?
+```
+
+**Why this matters:**
+- Download links get lost in scrollback after detailed responses
+- Users need easy access to the artifact/ZIP file
+- Repeated links reduce frustration and improve UX
 
 ### Progress Indicators Best Practices
 
@@ -374,22 +401,23 @@ Adding Python best practices... ✓
 Creating example prompts... ✓
 ```
 
-**Phase 2 - Comprehensive Review:**
-"I've created a code-reviewer Skill for both Claude Code and claude.ai. Here's what I built:
+**Phase 2 - Concise Summary:**
+"✓ Created your code-reviewer Skill! Here's what I built:
 
-**Key Decisions:**
-- Platform: Both (for maximum flexibility)
-- Scope: Focused on Python best practices, security issues, and style
-- Structure: Main instructions in SKILL.md, detailed Python patterns in REFERENCE.md
-- Description: Triggers on 'Python', 'code review', 'PR', or '.py' files
+**Files created:**
+- SKILL.md (main review instructions)
+- REFERENCE.md (detailed Python patterns)
+- templates/review-checklist.md
 
-**What's included:**
-- Comprehensive review checklist
-- Security vulnerability patterns
-- PEP 8 style guidance
-- Common anti-patterns to catch
+**Key features:**
+- Python best practices and PEP 8 checking
+- Security vulnerability detection
+- Code style analysis
+- Common anti-pattern identification
 
-What would you like to adjust?"
+**Download:** [Download code-reviewer.zip]
+
+I can explain any decisions if you'd like. What would you like to adjust?"
 
 **Phase 3 - Engagement Detection:**
 

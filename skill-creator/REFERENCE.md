@@ -1541,43 +1541,48 @@ This will trigger when you're working with APIs. Want to adjust the wording or t
 
 #### The Initial Review Pattern
 
-The initial review after autonomous creation is critical—it sets the tone and provides engagement signals.
+The initial review after autonomous creation is critical—it sets the tone and provides engagement signals. **Use a concise summary format, not comprehensive review.**
 
-**Structure of effective initial review:**
+**Structure of effective initial review (concise format):**
 
-1. **Opening (1 line):**
+1. **Opening (1 line with checkmark):**
    ```
-   "I've created a [skill-name] skill for [platform]. Here's what I built:"
-   ```
-
-2. **Key Decisions (4-5 bullets):**
-   ```
-   **Key Decisions:**
-   - Platform: [choice + brief reason]
-   - Scope: [what's included]
-   - Structure: [file organization]
-   - Description: [trigger approach]
-   - [Optional 5th item]
+   "✓ Created your [skill-name] Skill! Here's what I built:"
    ```
 
-3. **What's Included (3-5 bullets):**
+2. **Files Created (2-3 bullets):**
    ```
-   **What's included:**
-   - [Core feature 1]
-   - [Core feature 2]
-   - [Core feature 3]
-   - [Supporting feature]
+   **Files created:**
+   - SKILL.md (main instructions)
+   - REFERENCE.md (detailed patterns)
+   - templates/[template-name].md
    ```
 
-4. **Invitation for feedback (1 line):**
+3. **Key Features Summary (3-5 bullets):**
    ```
-   "What would you like to adjust?"
+   **Key features:**
+   - [Feature 1 description]
+   - [Feature 2 description]
+   - [Feature 3 description]
+   - [Feature 4 description]
+   ```
+
+4. **Download Link (prominent):**
+   ```
+   **Download:** [Download skill-name.zip]
+   ```
+
+5. **Offer to explain + feedback invitation:**
+   ```
+   "I can explain any decisions if you'd like. What would you like to adjust?"
    ```
 
 **Why this works:**
-- Decision explanations let high-engagement users ask "why"
-- Brief format doesn't overwhelm low-engagement users
-- Open-ended question allows any level of engagement
+- Digestible summary prevents information overload
+- Files created gives visibility into what was built
+- Key features focus on value, not implementation details
+- Download link is prominent and easy to find
+- Offer to explain makes decision details available on request
 - User's response clearly indicates engagement level
 
 #### Reading Initial Responses
@@ -1629,6 +1634,128 @@ Iteration 3: "tweak Z" [medium]
 
 After 3+ iterations: "Ready to package, or keep refining?"
 ```
+
+#### Artifact Creation Patterns
+
+**Create artifacts for real-time visibility during skill building.**
+
+Users prefer seeing files as they're created rather than just progress text. Use the Write tool for each file to open artifact panes.
+
+**What to create as artifacts:**
+- SKILL.md (always)
+- REFERENCE.md (if included)
+- Templates (*.md files in templates/)
+- Scripts (*.py, *.js files in scripts/)
+
+**When to create them:**
+During Phase 1 (Autonomous Create), as you build each component.
+
+**Example workflow:**
+```
+1. Show progress: "Creating Skill structure... ✓"
+2. Write SKILL.md using Write tool → opens artifact pane
+3. Show progress: "Writing description and metadata... ✓"
+4. Write REFERENCE.md using Write tool → opens artifact pane
+5. Show progress: "Adding templates... ✓"
+6. Write template files using Write tool → opens artifact panes
+7. Continue until all files created
+```
+
+**Why this works:**
+- Users see exactly what's being created in real-time
+- Artifact panes provide easy review without scrolling
+- Visual feedback builds confidence
+- Users can inspect files before the final summary
+
+**Pattern:**
+```python
+# Instead of just saying "creating SKILL.md"
+# Actually create it with Write tool:
+
+Write(
+  file_path="/path/to/skill-name/SKILL.md",
+  content="[full skill content]"
+)
+
+# This opens an artifact pane showing the file
+# User can see it being created in real-time
+```
+
+#### Download Link Management
+
+**Keep download links visible and accessible throughout the conversation.**
+
+Download links get lost in scrollback after detailed explanations. Re-emphasize them to improve UX.
+
+**When to repeat download links:**
+
+1. **After answering questions:**
+   ```
+   [User asks: "How does validation work?"]
+
+   Your response:
+   "Validation uses a three-step process:
+   1. Schema checking
+   2. Data type validation
+   3. Custom rule evaluation
+
+   [Detailed explanation...]
+
+   **Download:** [Download api-testing.zip]
+
+   Any other questions, or ready to use it?"
+   ```
+
+2. **After making changes:**
+   ```
+   [User: "Can you add GraphQL support?"]
+
+   Your response:
+   "✓ Updated to include GraphQL support
+
+   I've added:
+   - GraphQL query validation
+   - Schema introspection support
+   - Example GraphQL tests
+
+   **Download:** [Download api-testing.zip]
+
+   Ready to go, or any other changes?"
+   ```
+
+3. **After detailed explanations:**
+   ```
+   [User asks multiple questions, you provide in-depth answers]
+
+   At the end:
+   "...and that's how the progressive disclosure works.
+
+   **Download:** [Download skill-name.zip]
+
+   Does that clarify things? Any other questions?"
+   ```
+
+**Format consistency:**
+Always use the same format for download links:
+```
+**Download:** [Download skill-name.zip]
+```
+
+**Why this works:**
+- Links don't get buried in conversation
+- Users don't have to scroll back to find the artifact
+- Reduces friction and frustration
+- Shows consideration for user experience
+
+**Don't:**
+- Provide link only once at the beginning
+- Hide links in dense paragraphs
+- Assume users remember where the link is
+
+**Do:**
+- Repeat link after substantial responses
+- Make it visually distinct with bold formatting
+- Include it before asking next question
 
 ### Mode Selection Decision Tree
 
