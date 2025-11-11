@@ -1,13 +1,13 @@
 # Slack/Teams Announcement Template
 
-Use this template to announce the skill-creator to your team via Slack or Microsoft Teams.
+Use this template to announce the weaver-create to your team via Slack or Microsoft Teams.
 
 ---
 
 ## Full Announcement
 
 ```
-:tada: **New Tool: skill-creator for Claude**
+:tada: **New Tool: weaver-create for Claude**
 
 Create custom AI capabilities for your workflows!
 
@@ -18,7 +18,7 @@ Create custom AI capabilities for your workflows!
 
 :computer: **For Claude Code users:**
 • Run: `/plugin marketplace add flashingcursor/skill-weaver-marketplace`
-• Then: `/plugin install skill-creator`
+• Then: `/plugin install weaver-create`
 • Or see git installation: https://github.com/flashingcursor/skill-weaver
 
 :book: **Resources:**
@@ -41,12 +41,12 @@ Questions? Thread below :point_down:
 ## Short Announcement (For Quick Updates)
 
 ```
-:sparkles: **skill-creator now available!**
+:sparkles: **weaver-create now available!**
 
 Create custom Claude skills for your workflows.
 
 :arrow_right: claude.ai: Download from releases
-:arrow_right: Claude Code: `/plugin install skill-creator`
+:arrow_right: Claude Code: `/plugin install weaver-create`
 
 Full guide: https://github.com/flashingcursor/skill-weaver/blob/master/INSTALLATION.md
 
@@ -78,7 +78,7 @@ After posting the announcement, start a thread with:
 For ongoing adoption campaigns:
 
 ```
-:bulb: **Weekly AI Tip: skill-creator**
+:bulb: **Weekly AI Tip: weaver-create**
 
 This week: Create a skill for [specific team need]
 
@@ -107,7 +107,7 @@ Results:
 • [Metric 2]
 • [Time saved/efficiency gain]
 
-Want to create your own? Check out skill-creator:
+Want to create your own? Check out weaver-create:
 https://github.com/flashingcursor/skill-weaver
 
 Have a success story? Share it here!

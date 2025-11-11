@@ -1,20 +1,20 @@
 # Email Announcement Template
 
-Use this template to announce the skill-creator to your team via email.
+Use this template to announce the weaver-create to your team via email.
 
 ---
 
-**Subject**: New AI Capability: skill-creator for Claude
+**Subject**: New AI Capability: weaver-create for Claude
 
 ---
 
 Hi [Team/Name],
 
-I'm excited to share a new tool that will help us leverage Claude more effectively: **skill-creator**.
+I'm excited to share a new tool that will help us leverage Claude more effectively: **weaver-create**.
 
 ## What is it?
 
-skill-creator is a custom skill for Claude that guides you through creating reusable AI capabilities tailored to your workflows.
+weaver-create is a custom skill for Claude that guides you through creating reusable AI capabilities tailored to your workflows.
 
 ## Why use it?
 
@@ -32,7 +32,7 @@ skill-creator is a custom skill for Claude that guides you through creating reus
 ### For Claude Code:
 ```bash
 /plugin marketplace add flashingcursor/skill-weaver-marketplace
-/plugin install skill-creator
+/plugin install weaver-create
 ```
 
 Or see [installation guide](https://github.com/flashingcursor/skill-weaver/blob/master/INSTALLATION.md) for other methods.
@@ -78,4 +78,4 @@ Best regards,
 
 ---
 
-**P.S.** This skill was used to create itself! The skill-creator can help you build powerful custom capabilities for Claude.
+**P.S.** This skill was used to create itself! The weaver-create can help you build powerful custom capabilities for Claude.

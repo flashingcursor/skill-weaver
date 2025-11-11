@@ -9,21 +9,23 @@
   "homepage": "https://github.com/flashingcursor/skill-weaver",
   "plugins": [
     {
-      "name": "skill-creator",
+      "name": "weaver",
       "source": {
         "source": "github",
         "repo": "flashingcursor/skill-creator-plugin"
       },
-      "description": "Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
-      "version": "0.1.0",
+      "description": "Weaves custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
+      "version": "0.2.1",
       "author": "flashingcursor",
       "category": "productivity",
       "keywords": [
         "skills",
+        "weaver",
         "authoring",
         "templates",
         "development",
-        "productivity"
+        "productivity",
+        "crafting"
       ],
       "homepage": "https://github.com/flashingcursor/skill-weaver"
     }

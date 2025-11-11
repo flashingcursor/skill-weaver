@@ -1,14 +1,16 @@
-# Skill Creator - Custom Skill for Creating Skills
+# Skill Weaver - Custom Skill for Creating Skills
 
 A meta-skill that helps you create new Custom Skills for Claude following best practices and proper structure.
 
+> **Note**: Anthropic provides default skills including "skill-builder" and "skill-creator". If you prefer to use Skill Weaver, you can be explicit in your requests (e.g., "use weaver to create a skill for...") or manage enabled skills in settings.
+
 ## Overview
 
-The Skill Creator guides you through the entire process of building a Custom Skill, from initial planning to final packaging. It ensures your skills follow the correct structure, include proper metadata, and adhere to best practices.
+Skill Weaver guides you through the entire process of building a Custom Skill, from initial planning to final packaging. It ensures your skills follow the correct structure, include proper metadata, and adhere to best practices.
 
 ## What This Skill Does
 
-When activated, Skill Creator will:
+When activated, Skill Weaver will:
 
 1. **Gather Requirements**: Ask about your skill's purpose, scope, and needs
 2. **Create Structure**: Set up the proper directory and file organization
@@ -37,7 +39,7 @@ Simply ask Claude to create a skill:
 
 ### Workflow Modes
 
-The skill-creator adapts to your preferred interaction style:
+Skill Weaver adapts to your preferred interaction style:
 
 **Quick Create** - Fast and autonomous:
 ```
@@ -106,7 +108,7 @@ Template for Node.js scripts with async/await patterns.
 ## Directory Structure
 
 ```
-skill-creator/
+weaver-create/
 ├── Skill.md                    # Main skill file
 ├── README.md                   # This file
 └── templates/
@@ -220,6 +222,22 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.2.1**: Renamed directory from "skill-creator" to "weaver-create" to fully avoid conflicts
+  - Renamed directory from "skill-creator/" to "weaver-create/"
+  - Updated all documentation references to new directory name
+  - Added awareness note about both Anthropic "skill-builder" and "skill-creator"
+  - Updated all installation paths and examples
+- **0.2.0**: Renamed skill from "skill-creator" to "weaver" to avoid conflicts with Anthropic's default skill-builder
+  - Changed skill name to "weaver" in frontmatter
+  - Updated description to use "weaves" terminology
+  - Added awareness note about Anthropic's skill-builder
+  - Updated all documentation references
+- **0.1.1-beta.1**: UX improvements based on user feedback (beta)
+  - Changed Phase 2 from comprehensive review to concise summary
+  - Added artifact creation patterns for real-time file visibility
+  - Implemented download link repetition pattern to prevent loss in scrollback
+  - Updated Initial Review Pattern to focus on digestible summaries
+  - Added "offer to explain" pattern instead of upfront detailed explanations
 - **0.1.0**: First production release with complete adaptive workflow system
   - Adaptive skill creation workflow (Quick Create, Guided Create, Default modes)
   - Comprehensive engagement detection patterns

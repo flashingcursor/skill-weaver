@@ -35,7 +35,7 @@ This guide provides step-by-step instructions for installing the **skill-creator
 ```bash
 git clone https://github.com/flashingcursor/skill-weaver.git
 cd skill-weaver
-zip -r skill-creator.zip skill-creator/
+zip -r weaver-create.zip weaver-create/
 ```
 
 #### 2. Upload to claude.ai
@@ -189,7 +189,7 @@ cp -r skill-creator ~/.claude/skills/  # or .claude/skills/
 **Option A: Download ZIP**
 1. Download from [releases](https://github.com/flashingcursor/skill-weaver/releases)
 2. Extract the ZIP file
-3. Locate the `skill-creator/` folder
+3. Locate the `weaver-create/` folder
 
 **Option B: Clone Repository**
 ```bash
@@ -267,10 +267,10 @@ The skill will be loaded on next startup.
 4. **Verify Files**:
    ```bash
    # For personal skills
-   ls -la ~/.claude/skills/skill-creator/
+   ls -la ~/.claude/skills/weaver-create/
 
    # For project skills
-   ls -la .claude/skills/skill-creator/
+   ls -la .claude/skills/weaver-create/
 
    # Should see: Skill.md, README.md, REFERENCE.md, templates/
    ```
@@ -293,8 +293,8 @@ The skill will be loaded on next startup.
 2. Clear browser cache and reload
 3. Verify ZIP structure:
    ```
-   skill-creator.zip
-     └── skill-creator/
+   weaver-create.zip
+     └── weaver-create/
          ├── Skill.md
          ├── README.md
          └── ...
@@ -348,14 +348,14 @@ The skill will be loaded on next startup.
 1. Verify installation path:
    ```bash
    # Should exist
-   ls ~/.claude/skills/skill-creator/Skill.md
+   ls ~/.claude/skills/weaver-create/Skill.md
    # OR
-   ls .claude/skills/skill-creator/Skill.md
+   ls .claude/skills/weaver-create/Skill.md
    ```
 
 2. Check frontmatter syntax:
    ```bash
-   head -20 ~/.claude/skills/skill-creator/Skill.md
+   head -20 ~/.claude/skills/weaver-create/Skill.md
    # Look for valid YAML between --- markers
    ```
 
@@ -377,8 +377,8 @@ The skill will be loaded on next startup.
 **Verification**:
 ```bash
 # Check which format is used
-grep -A 2 "^version:" ~/.claude/skills/skill-creator/Skill.md
-grep -A 3 "^metadata:" ~/.claude/skills/skill-creator/Skill.md
+grep -A 2 "^version:" ~/.claude/skills/weaver-create/Skill.md
+grep -A 3 "^metadata:" ~/.claude/skills/weaver-create/Skill.md
 ```
 
 #### Plugin marketplace not found
@@ -406,12 +406,12 @@ grep -A 3 "^metadata:" ~/.claude/skills/skill-creator/Skill.md
 ```bash
 # Fix permissions for personal skills
 chmod 755 ~/.claude/skills
-chmod -R 644 ~/.claude/skills/skill-creator/*
+chmod -R 644 ~/.claude/skills/weaver-create/*
 chmod 755 ~/.claude/skills/skill-creator
 
 # Fix permissions for project skills
 chmod 755 .claude/skills
-chmod -R 644 .claude/skills/skill-creator/*
+chmod -R 644 .claude/skills/weaver-create/*
 chmod 755 .claude/skills/skill-creator
 ```
 
@@ -423,7 +423,7 @@ If you continue to experience issues:
 
 1. **Check Documentation**:
    - [README.md](README.md) - Overview and quick start
-   - [REFERENCE.md](skill-creator/REFERENCE.md) - Detailed technical reference
+   - [REFERENCE.md](weaver-create/REFERENCE.md) - Detailed technical reference
    - [SHARING.md](SHARING.md) - Team distribution guide
 
 2. **GitHub Issues**:
@@ -441,7 +441,7 @@ If you continue to experience issues:
 4. **Verify Installation**:
    ```bash
    # Check version
-   grep -A 1 "metadata:" skill-creator/Skill.md
+   grep -A 1 "metadata:" weaver-create/Skill.md
 
    # Verify file integrity
    find skill-creator -type f -name "*.md" | wc -l
@@ -455,14 +455,14 @@ If you continue to experience issues:
 After successful installation:
 
 1. **Read the Documentation**:
-   - [skill-creator/Skill.md](skill-creator/Skill.md) - Main skill instructions
-   - [skill-creator/REFERENCE.md](skill-creator/REFERENCE.md) - Advanced topics
-   - [skill-creator/README.md](skill-creator/README.md) - Overview
+   - [weaver-create/Skill.md](weaver-create/Skill.md) - Main skill instructions
+   - [weaver-create/REFERENCE.md](weaver-create/REFERENCE.md) - Advanced topics
+   - [weaver-create/README.md](weaver-create/README.md) - Overview
 
 2. **Try Creating a Skill**:
    - Ask Claude: "Create a new skill for [your use case]"
    - Follow the guided process
-   - Reference the templates in `skill-creator/templates/`
+   - Reference the templates in `weaver-create/templates/`
 
 3. **Share with Your Team**:
    - See [SHARING.md](SHARING.md) for distribution methods

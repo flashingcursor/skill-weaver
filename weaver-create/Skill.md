@@ -2,13 +2,13 @@
 name: weaver
 description: Weaves custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, custom skill authoring, weaving skills, or crafting skills.
 metadata:
-  version: 0.2.0
+  version: 0.2.1
   dependencies: none
 ---
 
 # Skill Weaver
 
-> **Note**: Anthropic provides a default "skill-builder" skill that may also respond to skill creation requests. If you prefer to use this Skill Weaver instead, you can be explicit in your request (e.g., "use weaver to create a skill for...") or check your enabled skills in settings.
+> **Note**: Anthropic provides default skills including "skill-builder" and "skill-creator" that may also respond to skill creation requests. If you prefer to use this Skill Weaver instead, you can be explicit in your request (e.g., "use weaver to create a skill for...") or manage your enabled skills in settings.
 
 ## Overview
 This Skill helps users create Skills for both Claude Code and claude.ai following official best practices. It guides through creating SKILL.md files, structuring directories, adding resources, and ensuring quality.
@@ -20,9 +20,9 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.2.0
+**Current Version**: 0.2.1
 
-This release renames the skill to "weaver" to avoid conflicts with Anthropic's default skill-builder. For version history and changelog, see [README.md](README.md#version-history).
+This release renames the directory to "weaver-create" to fully avoid conflicts with Anthropic's default skills. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 

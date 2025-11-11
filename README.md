@@ -96,7 +96,7 @@ skill-weaver/
 │       └── generate-release-notes.py  # Release notes generator
 ├── scripts/
 │   └── package-skill.sh           # Local packaging script
-└── skill-creator/
+└── weaver-create/
     ├── Skill.md                   # Main skill file
     ├── README.md                  # Skill documentation
     ├── REFERENCE.md               # Technical reference
@@ -150,10 +150,10 @@ git push origin v1.0.0
 python .github/scripts/validate-skill.py skill-creator
 
 # Check Python scripts
-python -m py_compile skill-creator/templates/*.py
+python -m py_compile weaver-create/templates/*.py
 
 # Check JavaScript scripts
-node --check skill-creator/templates/*.js
+node --check weaver-create/templates/*.js
 
 # Package locally
 ./scripts/package-skill.sh
@@ -161,8 +161,8 @@ node --check skill-creator/templates/*.js
 
 ### Creating a Release
 
-1. Update the version in `skill-creator/Skill.md`
-2. Update the version history in `skill-creator/README.md`
+1. Update the version in `weaver-create/Skill.md`
+2. Update the version history in `weaver-create/README.md`
 3. Commit your changes
 4. Create and push a tag:
    ```bash
@@ -231,9 +231,9 @@ Skill Creator will help you:
 ### This Repository
 - **[INSTALLATION.md](INSTALLATION.md)** - Complete installation guide for all platforms
 - **[SHARING.md](SHARING.md)** - Team distribution and rollout guide
-- **[skill-creator/Skill.md](skill-creator/Skill.md)** - Main skill instructions
-- **[skill-creator/REFERENCE.md](skill-creator/REFERENCE.md)** - Technical reference
-- **[skill-creator/README.md](skill-creator/README.md)** - Skill overview
+- **[weaver-create/Skill.md](weaver-create/Skill.md)** - Main skill instructions
+- **[weaver-create/REFERENCE.md](weaver-create/REFERENCE.md)** - Technical reference
+- **[weaver-create/README.md](weaver-create/README.md)** - Skill overview
 
 ### External Resources
 - **Skills Documentation**: [Claude Skills Docs](https://docs.claude.com/claude/docs/skills)

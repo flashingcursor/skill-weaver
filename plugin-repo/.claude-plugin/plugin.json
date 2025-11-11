@@ -1,7 +1,7 @@
 {
-  "name": "skill-creator",
-  "version": "0.1.0",
-  "description": "Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
+  "name": "weaver",
+  "version": "0.2.1",
+  "description": "Weaves custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines",
   "author": {
     "name": "flashingcursor",
     "url": "https://github.com/flashingcursor"
@@ -13,10 +13,12 @@
   },
   "keywords": [
     "skills",
+    "weaver",
     "authoring",
     "templates",
     "development",
-    "productivity"
+    "productivity",
+    "crafting"
   ],
   "license": "MIT"
 }

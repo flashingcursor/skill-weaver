@@ -1,6 +1,6 @@
 # Sharing Templates
 
-This directory contains ready-to-use templates for announcing and distributing the skill-creator to your team or organization.
+This directory contains ready-to-use templates for announcing and distributing the weaver-create to your team or organization.
 
 ## Available Templates
 

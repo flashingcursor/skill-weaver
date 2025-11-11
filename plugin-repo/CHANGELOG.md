@@ -1,9 +1,96 @@
 # Changelog
 
-All notable changes to the skill-creator plugin will be documented in this file.
+All notable changes to the weaver plugin (formerly skill-creator) will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.1] - 2025-11-07
+
+### Directory Rename
+
+This release renames the directory structure to fully avoid conflicts with Anthropic's default skills.
+
+#### Changed
+
+**Directory Structure**
+- Renamed directory from "skill-creator/" to "weaver-create/"
+- Updated plugin repository structure to match
+- Updated all file paths in documentation
+
+**Awareness Updates**
+- Updated awareness notes to mention both "skill-builder" AND "skill-creator"
+- Clarified that both Anthropic default skills may respond to requests
+- Improved guidance on explicitly invoking Skill Weaver
+
+**Documentation**
+- Updated all references from "skill-creator/" to "weaver-create/"
+- Updated installation paths and examples
+- Updated INSTALLATION.md, SHARING.md, README.md, and all templates
+
+## [0.2.0] - 2025-11-07
+
+### Renamed to Weaver
+
+This release renames the skill from "skill-creator" to "weaver" to avoid conflicts with Anthropic's default "skill-builder" skill.
+
+#### Changed
+
+**Skill Name and Branding**
+- Renamed skill from "skill-creator" to "weaver" in frontmatter
+- Updated description to use "weaves" terminology instead of "creates"
+- Changed skill display name to "Skill Weaver"
+- Updated plugin.json name field to "weaver"
+- Updated all documentation references
+
+**Added Awareness**
+- Added prominent note about Anthropic's default "skill-builder" skill
+- Provided guidance on how to explicitly invoke Skill Weaver when needed
+- Updated description keywords to include "weaving" and "crafting"
+
+**Breaking Changes**
+- ⚠️ Plugin name changed from "skill-creator" to "weaver"
+- ⚠️ Installation command changed to `/plugin install weaver@skill-weaver-marketplace`
+- ⚠️ Users will need to uninstall old "skill-creator" and install new "weaver" plugin
+
+## [0.1.1-beta.1] - 2025-11-07
+
+### UX Improvements Beta
+
+This beta release addresses user feedback about the adaptive workflow being too overwhelming.
+
+#### Changed
+
+**Phase 2: Concise Summary (Previously Comprehensive Review)**
+- Changed from comprehensive review to digestible summary format
+- Shows files created, key features (3-5 bullets), and prominent download link
+- Offers to explain decisions instead of explaining everything upfront
+- More inviting for specific questions vs overwhelming detail
+
+**Artifact Creation**
+- Added explicit guidance to create artifacts during Phase 1
+- Uses Write tool for each file (SKILL.md, REFERENCE.md, templates, scripts)
+- Opens artifact panes for real-time visibility during creation
+- Restores user-preferred behavior from earlier version
+
+**Download Link Management**
+- Repeats download links after explanations to prevent loss in scrollback
+- Repeats after making changes to maintain accessibility
+- Consistent format: "**Download:** [Download skill-name.zip]"
+- Reduces user frustration from having to scroll back
+
+#### Added
+
+**Documentation**
+- Updated Initial Review Pattern in REFERENCE.md to concise format
+- Added Artifact Creation Patterns section (134 lines)
+- Added Download Link Management section (75 lines)
+- Updated example interaction to show new concise format
+
+**User Feedback Addressed:**
+- ✓ Initial review was too comprehensive → now concise with offer to elaborate
+- ✓ Download links lost in scrollback → now repeated after responses
+- ✓ Missing artifact panes → now explicitly creates artifacts for visibility
 
 ## [0.1.0] - 2025-11-06
 

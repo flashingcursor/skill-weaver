@@ -198,7 +198,7 @@ Choose your distribution method based on your platform and team size:
    2. Restart Claude Code
    3. Try: "Create a skill for our API testing workflow"
 
-   Docs: .claude/skills/skill-creator/README.md
+   Docs: .claude/skills/weaver-create/README.md
    ```
 
 **Team members get it via**: `git pull` + Claude Code restart
