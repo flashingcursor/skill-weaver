@@ -3,7 +3,7 @@
 Update version in Skill.md frontmatter.
 
 Usage: update-version.py <skill-directory> <version>
-Example: update-version.py skill-creator 1.2.0
+Example: update-version.py weaver-create 1.2.0
 """
 
 import sys
@@ -41,7 +41,7 @@ def main():
     if len(sys.argv) != 3:
         print("Usage: update-version.py <skill-directory> <version>", file=sys.stderr)
         print("\nExample:", file=sys.stderr)
-        print("  python update-version.py skill-creator 1.2.0", file=sys.stderr)
+        print("  python update-version.py weaver-create 1.2.0", file=sys.stderr)
         sys.exit(1)
 
     skill_path = sys.argv[1]

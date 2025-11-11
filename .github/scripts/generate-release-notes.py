@@ -3,7 +3,7 @@
 Generate release notes for a skill release.
 
 Usage: generate-release-notes.py <skill-directory> <version>
-Example: generate-release-notes.py skill-creator 1.2.0
+Example: generate-release-notes.py weaver-create 1.2.0
 """
 
 import sys
@@ -137,7 +137,7 @@ def generate_release_notes(skill_path, version):
     # Installation
     notes.append("## Installation")
     notes.append("")
-    notes.append("1. Download `skill-creator-" + version + ".zip` from the assets below")
+    notes.append("1. Download `weaver-create-" + version + ".zip` from the assets below")
     notes.append("2. Open Claude and navigate to **Settings > Capabilities**")
     notes.append("3. Click **Upload Skill** and select the downloaded ZIP file")
     notes.append("4. Enable the skill in your capabilities list")
@@ -189,7 +189,7 @@ def main():
     if len(sys.argv) != 3:
         print("Usage: generate-release-notes.py <skill-directory> <version>", file=sys.stderr)
         print("\nExample:", file=sys.stderr)
-        print("  python generate-release-notes.py skill-creator 1.2.0", file=sys.stderr)
+        print("  python generate-release-notes.py weaver-create 1.2.0", file=sys.stderr)
         sys.exit(1)
 
     skill_path = sys.argv[1]

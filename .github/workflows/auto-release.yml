@@ -6,7 +6,7 @@ on:
       - master
       - main  # Support both branch names
     paths:
-      - 'skill-creator/**'
+      - 'weaver-create/**'
 
 permissions:
   contents: write
@@ -38,7 +38,7 @@ jobs:
         run: |
           VERSION=$(python -c "
           import yaml
-          with open('skill-creator/Skill.md', 'r') as f:
+          with open('weaver-create/Skill.md', 'r') as f:
               content = f.read()
               parts = content.split('---', 2)
               if len(parts) >= 3:
@@ -115,16 +115,16 @@ jobs:
         run: pip install pyyaml
 
       - name: Validate Skill Structure
-        run: python .github/scripts/validate-skill.py skill-creator
+        run: python .github/scripts/validate-skill.py weaver-create
 
       - name: Check for secrets
         run: |
           echo "Scanning for potential hardcoded secrets..."
-          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+          if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\+" weaver-create/ 2>/dev/null; then
             echo "ERROR: Found potential hardcoded API key"
             exit 1
           fi
-          if grep -r -i "password\s*=\s*['\"][^'\"]\+" skill-creator/ 2>/dev/null; then
+          if grep -r -i "password\s*=\s*['\"][^'\"]\+" weaver-create/ 2>/dev/null; then
             echo "ERROR: Found potential hardcoded password"
             exit 1
           fi
@@ -133,7 +133,7 @@ jobs:
       - name: Validate Python scripts
         run: |
           echo "Validating Python scripts..."
-          for script in skill-creator/scripts/*.py skill-creator/templates/*.py; do
+          for script in weaver-create/scripts/*.py weaver-create/templates/*.py; do
             if [ -f "$script" ]; then
               echo "Checking $script"
               python -m py_compile "$script"
@@ -143,7 +143,7 @@ jobs:
       - name: Validate JavaScript scripts
         run: |
           echo "Checking JavaScript syntax..."
-          for script in skill-creator/scripts/*.js skill-creator/templates/*.js; do
+          for script in weaver-create/scripts/*.js weaver-create/templates/*.js; do
             if [ -f "$script" ]; then
               echo "Checking $script"
               node --check "$script"
@@ -171,12 +171,12 @@ jobs:
       - name: Package Skill
         run: |
           VERSION="${{ needs.check-version.outputs.current_version }}"
-          echo "Packaging skill-creator version $VERSION..."
+          echo "Packaging weaver-create version $VERSION..."
 
           # Create clean package
           mkdir -p release-package
-          cp -r skill-creator release-package/
-          cd release-package/skill-creator
+          cp -r weaver-create release-package/
+          cd release-package/weaver-create
 
           # Remove development files
           find . -name ".DS_Store" -delete 2>/dev/null || true
@@ -185,27 +185,27 @@ jobs:
           find . -name ".git*" -delete 2>/dev/null || true
 
           cd ..
-          zip -r ../skill-creator-${VERSION}.zip skill-creator/ \
+          zip -r ../weaver-create-${VERSION}.zip weaver-create/ \
             -x "*/.git/*" -x "*/__pycache__/*" -x "*.pyc" -x "*/.DS_Store"
           cd ..
 
-          echo "Package created: skill-creator-${VERSION}.zip"
-          ls -lh skill-creator-${VERSION}.zip
+          echo "Package created: weaver-create-${VERSION}.zip"
+          ls -lh weaver-create-${VERSION}.zip
 
       - name: Verify ZIP structure
         run: |
           VERSION="${{ needs.check-version.outputs.current_version }}"
           echo "Verifying ZIP structure..."
-          unzip -l skill-creator-${VERSION}.zip | head -20
+          unzip -l weaver-create-${VERSION}.zip | head -20
 
           # Test extraction
-          unzip -t skill-creator-${VERSION}.zip
+          unzip -t weaver-create-${VERSION}.zip
 
       - name: Generate Release Notes
         id: release_notes
         run: |
           VERSION="${{ needs.check-version.outputs.current_version }}"
-          python .github/scripts/generate-release-notes.py skill-creator "$VERSION" > release-notes.md
+          python .github/scripts/generate-release-notes.py weaver-create "$VERSION" > release-notes.md
 
           echo "Generated release notes:"
           cat release-notes.md
@@ -222,9 +222,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ needs.check-version.outputs.current_version }}
-          name: Skill Creator v${{ needs.check-version.outputs.current_version }}
+          name: Skill Weaver v${{ needs.check-version.outputs.current_version }}
           body_path: release-notes.md
-          files: skill-creator-${{ needs.check-version.outputs.current_version }}.zip
+          files: weaver-create-${{ needs.check-version.outputs.current_version }}.zip
           draft: false
           prerelease: ${{ contains(needs.check-version.outputs.current_version, 'alpha') || contains(needs.check-version.outputs.current_version, 'beta') }}
         env:
@@ -233,8 +233,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: skill-creator-${{ needs.check-version.outputs.current_version }}
-          path: skill-creator-${{ needs.check-version.outputs.current_version }}.zip
+          name: weaver-create-${{ needs.check-version.outputs.current_version }}
+          path: weaver-create-${{ needs.check-version.outputs.current_version }}.zip
           retention-days: 90
 
       - name: Release Summary
@@ -247,7 +247,7 @@ jobs:
           echo "https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
           echo ""
           echo "🚀 Installation:"
-          echo "1. Download skill-creator-${VERSION}.zip"
+          echo "1. Download weaver-create-${VERSION}.zip"
           echo "2. Upload to Claude via Settings > Capabilities"
           echo "3. Enable the Skill Creator skill"
           echo ""

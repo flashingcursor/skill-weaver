@@ -211,7 +211,7 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: validate-skill.py <skill-directory>")
         print("\nExample:")
-        print("  python validate-skill.py skill-creator")
+        print("  python validate-skill.py weaver-create")
         sys.exit(1)
 
     skill_path = sys.argv[1]

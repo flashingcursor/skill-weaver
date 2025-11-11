@@ -26,7 +26,7 @@ jobs:
         run: pip install pyyaml
 
       - name: Validate Skill
-        run: python .github/scripts/validate-skill.py skill-creator
+        run: python .github/scripts/validate-skill.py weaver-create
 
   build:
     name: Build and Package Skill
@@ -49,28 +49,28 @@ jobs:
       - name: Update version in Skill.md
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          python .github/scripts/update-version.py skill-creator "$VERSION"
+          python .github/scripts/update-version.py weaver-create "$VERSION"
 
       - name: Package Skill
         run: |
-          echo "Packaging skill-creator..."
-          cd skill-creator
-          zip -r ../skill-creator-${{ steps.version.outputs.version }}.zip . \
+          echo "Packaging weaver-create..."
+          cd weaver-create
+          zip -r ../weaver-create-${{ steps.version.outputs.version }}.zip . \
             -x "*.git*" -x "*__pycache__*" -x "*.pyc" -x ".DS_Store"
           cd ..
 
-          echo "Package created: skill-creator-${{ steps.version.outputs.version }}.zip"
-          ls -lh skill-creator-${{ steps.version.outputs.version }}.zip
+          echo "Package created: weaver-create-${{ steps.version.outputs.version }}.zip"
+          ls -lh weaver-create-${{ steps.version.outputs.version }}.zip
 
       - name: Verify ZIP structure
         run: |
           echo "Verifying ZIP structure..."
-          unzip -l skill-creator-${{ steps.version.outputs.version }}.zip | head -20
+          unzip -l weaver-create-${{ steps.version.outputs.version }}.zip | head -20
 
       - name: Generate Release Notes
         id: release_notes
         run: |
-          python .github/scripts/generate-release-notes.py skill-creator ${{ steps.version.outputs.version }} > release-notes.md
+          python .github/scripts/generate-release-notes.py weaver-create ${{ steps.version.outputs.version }} > release-notes.md
           cat release-notes.md
 
       - name: Create GitHub Release
@@ -79,7 +79,7 @@ jobs:
           name: Skill Creator ${{ steps.version.outputs.version }}
           body_path: release-notes.md
           files: |
-            skill-creator-${{ steps.version.outputs.version }}.zip
+            weaver-create-${{ steps.version.outputs.version }}.zip
           draft: false
           prerelease: false
         env:
@@ -88,8 +88,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: skill-creator-${{ steps.version.outputs.version }}
-          path: skill-creator-${{ steps.version.outputs.version }}.zip
+          name: weaver-create-${{ steps.version.outputs.version }}
+          path: weaver-create-${{ steps.version.outputs.version }}.zip
           retention-days: 90
 
   announce:
@@ -111,7 +111,7 @@ jobs:
           echo "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
           echo ""
           echo "🚀 To use this skill:"
-          echo "1. Download skill-creator-*.zip from the release"
+          echo "1. Download weaver-create-*.zip from the release"
           echo "2. Upload to Claude via Settings > Capabilities"
           echo "3. Enable the Skill Creator skill"
           echo "4. Start creating custom skills!"
