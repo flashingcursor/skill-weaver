@@ -1,12 +1,14 @@
 ---
-name: skill-creator
-description: Creates custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, or custom skill authoring.
+name: weaver
+description: Weaves custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, custom skill authoring, weaving skills, or crafting skills.
 metadata:
-  version: 0.1.1-beta.1
+  version: 0.2.0
   dependencies: none
 ---
 
-# Skill Creator
+# Skill Weaver
+
+> **Note**: Anthropic provides a default "skill-builder" skill that may also respond to skill creation requests. If you prefer to use this Skill Weaver instead, you can be explicit in your request (e.g., "use weaver to create a skill for...") or check your enabled skills in settings.
 
 ## Overview
 This Skill helps users create Skills for both Claude Code and claude.ai following official best practices. It guides through creating SKILL.md files, structuring directories, adding resources, and ensuring quality.
@@ -18,13 +20,13 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.1.1-beta.1
+**Current Version**: 0.2.0
 
-This beta release includes UX improvements based on user feedback. For version history and changelog, see [README.md](README.md#version-history).
+This release renames the skill to "weaver" to avoid conflicts with Anthropic's default skill-builder. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 
-This Skill Creator supports two platforms:
+Skill Weaver supports two platforms:
 
 ### Claude Code (Agent Skills)
 - Filesystem-based storage (`~/.claude/skills/`, `.claude/skills/`)
