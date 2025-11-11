@@ -47,3 +47,6 @@ Thumbs.db
 # Distribution
 dist/
 release/
+
+# Claude local configuration
+.claude/
