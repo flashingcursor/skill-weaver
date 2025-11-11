@@ -1,4 +1,4 @@
-# Skill Creator - Technical Reference
+# Skill Weaver - Technical Reference
 
 This document provides detailed technical information for creating Skills for both Claude Code and claude.ai. It's referenced from SKILL.md but contains supplemental details that aren't needed for every skill creation task.
 

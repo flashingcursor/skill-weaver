@@ -7,7 +7,7 @@ A meta-skill repository for creating Custom Skills for Claude.
 
 ## What is This?
 
-This repository contains **Skill Creator**, a Custom Skill that helps you build other Custom Skills for Claude. It's a comprehensive guide and toolset that ensures your skills follow best practices, proper structure, and security guidelines.
+This repository contains **Skill Weaver**, a Custom Skill that helps you build other Custom Skills for Claude. It's a comprehensive guide and toolset that ensures your skills follow best practices, proper structure, and security guidelines.
 
 **Works on both**:
 - ✅ **claude.ai** (ZIP upload)
@@ -181,7 +181,7 @@ We follow [Semantic Versioning](https://semver.org/):
 
 ## What You'll Learn
 
-Using the Skill Creator teaches you:
+Using the Skill Weaver teaches you:
 
 - ✅ How to structure Custom Skills properly
 - ✅ YAML frontmatter requirements and best practices
@@ -193,7 +193,7 @@ Using the Skill Creator teaches you:
 
 ## Skills You Can Create
 
-With Skill Creator, you can build:
+With Skill Weaver, you can build:
 
 - **Knowledge Skills**: Embed company guidelines, style guides, or documentation
 - **Workflow Skills**: Automate repetitive multi-step processes
@@ -207,7 +207,7 @@ With Skill Creator, you can build:
 ```
 User: "Create a skill for our company brand guidelines"
 
-Skill Creator will help you:
+Skill Weaver will help you:
 1. Structure brand colors, fonts, and logo rules
 2. Add example materials
 3. Define when to apply the guidelines
@@ -218,7 +218,7 @@ Skill Creator will help you:
 ```
 User: "Build a skill that analyzes CSV files and creates reports"
 
-Skill Creator will help you:
+Skill Weaver will help you:
 1. Set up Python script with pandas
 2. Define input/output formats
 3. Add error handling
@@ -247,7 +247,7 @@ We welcome contributions! Here's how you can help:
 1. **Report Issues**: Found a bug? [Open an issue](../../issues)
 2. **Suggest Features**: Have ideas? [Start a discussion](../../discussions)
 3. **Submit PRs**: Improvements welcome!
-4. **Share Skills**: Create a skill using Skill Creator and share your experience
+4. **Share Skills**: Create a skill using Skill Weaver and share your experience
 
 ### Contributing Guidelines
 
@@ -271,4 +271,4 @@ Created to help the Claude community build better Custom Skills.
 
 ---
 
-**Made with** the Skill Creator skill itself! 🎨
+**Made with** the Skill Weaver skill itself! 🎨

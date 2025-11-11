@@ -150,7 +150,7 @@ Covers all aspects:
 ```
 User: "Create a skill for applying our company's coding standards"
 
-Skill Creator will:
+Skill Weaver will:
 1. Ask about your coding standards
 2. Create a focused skill directory
 3. Generate Skill.md with your guidelines
@@ -161,7 +161,7 @@ Skill Creator will:
 ```
 User: "Build a skill that processes CSV data and generates reports"
 
-Skill Creator will:
+Skill Weaver will:
 1. Gather requirements about data format and report types
 2. Set up directory with scripts folder
 3. Create Skill.md with proper dependencies
@@ -252,7 +252,7 @@ When creating skills with scripts:
 - **0.1.0-alpha.4**: Enhanced dual-platform compatibility with version redundancy and improved documentation
 - **0.1.0-alpha.3**: Fixed auto-release workflow to extract version from metadata field
 - **0.1.0-alpha.2**: Fixed frontmatter structure for claude.ai compatibility, updated documentation
-- **0.1.0-alpha.1**: Initial alpha release of Skill Creator
+- **0.1.0-alpha.1**: Initial alpha release of Skill Weaver
 
 ## Resources
 

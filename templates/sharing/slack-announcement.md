@@ -98,7 +98,7 @@ Questions? #ai-help
 Share team wins:
 
 ```
-:trophy: **Skill Creator Success Story**
+:trophy: **Skill Weaver Success Story**
 
 @[TeamMember] created a skill for [use case]!
 
