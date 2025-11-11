@@ -222,6 +222,10 @@ When creating skills with scripts:
 
 ## Version History
 
+- **0.2.2**: Fixed CI workflows to work with new directory structure
+  - Updated all GitHub Actions workflows to use weaver-create paths
+  - Updated release names from "Skill Creator" to "Skill Weaver"
+  - Updated package names from skill-creator-*.zip to weaver-create-*.zip
 - **0.2.1**: Renamed directory from "skill-creator" to "weaver-create" to fully avoid conflicts
   - Renamed directory from "skill-creator/" to "weaver-create/"
   - Updated all documentation references to new directory name

@@ -2,7 +2,7 @@
 name: weaver
 description: Weaves custom Skills for Claude following official best practices including proper structure, metadata, progressive disclosure, and security guidelines. Use when creating new skills, building custom workflows, or when user mentions skill creation, skill development, custom skill authoring, weaving skills, or crafting skills.
 metadata:
-  version: 0.2.1
+  version: 0.2.2
   dependencies: none
 ---
 
@@ -20,9 +20,9 @@ Skills package expertise into discoverable capabilities. Each Skill consists of 
 
 ## Version
 
-**Current Version**: 0.2.1
+**Current Version**: 0.2.2
 
-This release renames the directory to "weaver-create" to fully avoid conflicts with Anthropic's default skills. For version history and changelog, see [README.md](README.md#version-history).
+This release fixes CI workflows to work with the new directory structure. For version history and changelog, see [README.md](README.md#version-history).
 
 ## Platform Support
 
